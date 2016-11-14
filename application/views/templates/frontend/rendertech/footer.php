@@ -13,7 +13,7 @@
         	</div>
         	<div class="col-lg-3 col-md-3 col-sm-6">
         		<div class="column">
-        			<h4>Categories</h4>
+        			<h4>Products</h4>
         			<ul>
         				<?php
 						/*$sql_p = mysqli_query($link,"SELECT * FROM tbl_produk ORDER BY rand() ASC LIMIT 4");
