@@ -49,28 +49,9 @@
 									<div class="input-group">
 
 									<span class="input-group-addon">
-									<i class="ace-icon fa fa-user"></i>
+									<i class="ace-icon fa fa-list"></i>
 									</span>
-									<input type="text" class="form-control search-query" placeholder="Cari nama.." value="<?php echo $query1;?>" name="query1">
-
-									<span class="input-group-addon">
-									<i class="ace-icon fa fa-info-circle"></i>
-									</span>
-									<select class="form-control" id="form-field-select-1" name="status">
-										<option value="">-- Status --</option>
-										<option value="0" <?php if($status=='0') { echo "selected"; }?>>Aktif</option>
-										<option value="1" <?php if($status=='1') { echo "selected"; }?>>Non-Aktif</option>
-									</select>
-
-									<span class="input-group-addon">
-									<i class="ace-icon fa fa-users"></i>
-									</span>
-									<select class="form-control" id="form-field-select-1" name="grup">
-										<option value="">-- Grup --</option>
-										<?php foreach ($user_type as $data) { ?>
-											<option value="<?php echo $data->id;?>" <?php if($grup==$data->id) { echo "selected"; }?>><?php echo $data->type; ?></option>
-										<?php }?>
-									</select>
+									<input type="text" class="form-control search-query" placeholder="Cari nama bahan.." value="<?php echo $query1;?>" name="query1">
 
 									<span class="input-group-btn">
 									<button type="submit" class="btn btn-purple btn-sm">
@@ -95,16 +76,11 @@
 					<table id="simple-table" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
-								<th class="center">
-									<label class="pos-rel">
-										<input type="checkbox" class="ace" />
-										<span class="lbl"></span>
-									</label>
-								</th>
-								<th>#</th><th>id_bahan</th>
-<th>jenis_bahan</th>
-<th>harga</th>
-<th></th>
+								<th>#</th>
+								<th>Jenis Bahan</th>
+								<th>Harga</th>
+								<th>Qty</th>
+								<th></th>
 							</tr>
 						</thead>
 
@@ -114,17 +90,11 @@
 						foreach ($bahan as $row) {
 						?>
 							<tr>
-								<td class="center">
-									<label class="pos-rel">
-										<input type="checkbox" class="ace" />
-										<span class="lbl"></span>
-									</label>
-								</td>
-
-								<td><?php echo $a;?></td><td><?php echo $row->id_bahan?></td>
-<td><?php echo $row->jenis_bahan?></td>
-<td><?php echo $row->harga?></td>
-<td>
+								<td><?php echo $row->id_bahan?></td>
+								<td><?php echo $row->jenis_bahan?></td>
+								<td>Rp. <?php echo number_format($row->harga,"0",".",".")?></td>
+								<td><?php echo $row->qty?></td>
+								<td>
 									<div class="hidden-sm hidden-xs btn-group">
 										<?php if($edit=='true') { ?>
 										<a class="btn btn-xs btn-info" href="<?php echo base_url();?>bahan/bahan_edit/<?php echo $row->id_bahan?>">
@@ -184,5 +154,6 @@
 					<center><?php echo $this->pagination->create_links(); ?></center>
 				</div><!-- /.span -->
 			</div><!-- /.row -->
+			</div>
 
 

@@ -16,9 +16,9 @@
 				<a data-toggle="tab" href="#umum" aria-expanded="true">Umum</a>
 			</li>
 
-			<li class="">
+			<!--<li class="">
 				<a data-toggle="tab" href="#harga" aria-expanded="false">Harga & Stok</a>
-			</li>
+			</li>-->
 
 			<li class="">
 				<a data-toggle="tab" href="#seo" aria-expanded="false">SEO</a>
@@ -121,7 +121,7 @@
 						</div>
 					</div>												
 				</div>
-				<div class="form-group">
+				<!--<div class="form-group">
 					<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1"> Label </label>
 
 					<div class="col-sm-2">
@@ -132,7 +132,7 @@
 							<?php }?>
 						</select>
 					</div>
-				</div>
+				</div>-->
 			</div>
 
 			<div id="harga" class="tab-pane">

@@ -115,8 +115,24 @@ class Bahan extends CI_Controller
     public function bahan_save()
     {
         if($this->session->userdata('logged_in')) {
-            /* PUT YOUR OWN PROCESS HERE */
+            //* PUT YOUR OWN PROCESS HERE */
+            $jenis_bahan = $this->input->post("jenis_bahan");
+            $harga = $this->input->post("harga");
+            $qty = $this->input->post("qty");
 
+            $data = array(
+                'jenis_bahan' => $jenis_bahan,
+                'harga' => $harga,
+                'qty' => $qty
+            );
+
+            if($this->bahan_model->save_data($data)) {
+                $this->session->set_flashdata('success', 'Data ditambah!');
+                redirect('bahan', 'refresh');
+            } else {
+                $this->session->set_flashdata('error', 'Data gagal ditambah!');
+                redirect('bahan', 'refresh');
+            }
         } else {
             redirect('backend_panel', 'refresh');
         }
@@ -135,7 +151,10 @@ class Bahan extends CI_Controller
                 $dt=$this->bahan_model->get_data_edit($id);
 
                 /* DEFINE YOUR OWN DATA HERE */
-
+                $data['id_bahan'] = $dt->id_bahan;
+                $data['jenis_bahan'] = $dt->jenis_bahan;
+                $data['harga'] = $dt->harga;
+                $data['qty'] = $dt->qty;
                 $data['judul']=$datas->website_title;
                 $data['company']=$datas->company_name;
                 $data['judul_panel']='Ubah bahan';
@@ -158,6 +177,23 @@ class Bahan extends CI_Controller
     {
         if($this->session->userdata('logged_in')) {
             /* PUT YOUR OWN PROCESS HERE */
+            $id_bahan = $this->input->post("id_bahan");
+            $jenis_bahan = $this->input->post("jenis_bahan");
+            $harga = $this->input->post("harga");
+            $qty = $this->input->post("qty");
+
+            $data = array(
+                'jenis_bahan' => $jenis_bahan,
+                'harga' => $harga,
+                'qty' => $qty
+            );
+            if($this->bahan_model->update_data($id_bahan, $data)) {
+                $this->session->set_flashdata('success', 'Data diubah!');
+                redirect('bahan', 'refresh');
+            } else {
+                $this->session->set_flashdata('error', 'Data gagal diubah!');
+                redirect('bahan', 'refresh');
+            }
         } else {
             redirect('backend_panel', 'refresh');
         }
@@ -172,6 +208,13 @@ class Bahan extends CI_Controller
         if($this->session->userdata('logged_in')) {
             if(!empty($per->is_delete)&&($per->is_delete=='true')) {
                 /* PUT YOUR OWN PROCESS HERE */
+                if($this->bahan_model->hapus($id)) {
+                    $this->session->set_flashdata('success', 'Data dihapus!');
+                    redirect('bahan', 'refresh');
+                } else {
+                    $this->session->set_flashdata('error', 'Data gagal dihapus!');
+                    redirect('bahan', 'refresh');
+                }
             } else if(empty($per->is_delete)) {
                 $this->session->set_flashdata('error', 'Maaf, Anda tidak memiliki hak akses!');
                 redirect('bahan', 'refresh');

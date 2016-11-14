@@ -24,7 +24,7 @@ class Bahan_model extends CI_Model
     {
         $this->db->select('*');
         if($param['query1']!='') {
-            $this->db->like('name',$param['query1']);
+            $this->db->like('jenis_bahan',$param['query1']);
         }
 
         $query = $this->db->get('kb_bahan',$sampai,$dari);

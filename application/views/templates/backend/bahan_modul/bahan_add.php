@@ -7,25 +7,29 @@
 <div class="row">
 <div class="col-xs-12">
 	<!-- PAGE CONTENT BEGINS -->
-	<form class="form-horizontal" role="form" action="<?php echo base_url('bahan/bahan_save'); ?>" method="post" enctype="multipart/form-data"><div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1">id_bahan</label>
+	<form class="form-horizontal" role="form" action="<?php echo base_url('bahan/bahan_save'); ?>" method="post" enctype="multipart/form-data">
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1">Jenis Bahan</label>
 
 			<div class="col-sm-9">
-				<input type="text" id="form-field-1-1" name="id_bahan" placeholder="id_bahan" class="col-xs-10 col-sm-5" required />
+				<input type="text" id="form-field-1-1" name="jenis_bahan" placeholder="Jenis bahan" class="col-xs-10 col-sm-5" required />
 			</div>
-		</div><div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1">jenis_bahan</label>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1">Harga</label>
 
 			<div class="col-sm-9">
-				<input type="text" id="form-field-1-1" name="jenis_bahan" placeholder="jenis_bahan" class="col-xs-10 col-sm-5" required />
+				<input type="text" id="form-field-1-1" name="harga" placeholder="Harga" class="col-xs-10 col-sm-5" required />
 			</div>
-		</div><div class="form-group">
-			<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1">harga</label>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1-1">Qty</label>
 
 			<div class="col-sm-9">
-				<input type="text" id="form-field-1-1" name="harga" placeholder="harga" class="col-xs-10 col-sm-5" required />
+				<input type="text" id="form-field-1-1" name="qty" placeholder="Jumlah stok" class="col-xs-10 col-sm-5" required />
 			</div>
-		</div><div class="clearfix form-actions">
+		</div>
+		<div class="clearfix form-actions">
 			<div class="col-md-offset-3 col-md-9">
 				<button class="btn btn-info" type="submit">
 					<i class="ace-icon fa fa-check bigger-110"></i>
