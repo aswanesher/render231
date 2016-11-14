@@ -1,0 +1,131 @@
+<?php
+
+if (!defined('BASEPATH')) exit ('No direct script access allowed');
+
+class Diskon_reseller_model extends CI_Model
+{
+    public $table = 'kb_diskon_reseller';
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    function get_data()
+    {
+        $this->db->select('*');
+        $this->db->from('kb_diskon_reseller');
+
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function get_dataall($param,$sampai,$dari)
+    {
+        $this->db->select('*');
+        if($param['query1']!='') {
+            $this->db->like('kb_diskon_reseller.id_label',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.diskon',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.type_reseller',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.id_diskon',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.min_beli',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.max_beli',$param['query1']);
+            $this->db->or_like('kb_label_produk.nama_label',$param['query1']);
+            $this->db->or_like('kb_reseller_type.nama_type',$param['query1']);
+        }
+        $this->db->join('kb_reseller_type','kb_diskon_reseller.type_reseller=kb_reseller_type.id_typereseller','left');
+        $this->db->join('kb_label_produk','kb_diskon_reseller.id_label=kb_label_produk.id_label','left');
+        $query = $this->db->get('kb_diskon_reseller',$sampai,$dari);
+        return $query->result();
+    }
+
+    function jumlah($param){
+                if($param['query1']!='') {
+            $this->db->like('kb_diskon_reseller.id_label',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.diskon',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.type_reseller',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.id_diskon',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.min_beli',$param['query1']);
+            $this->db->or_like('kb_diskon_reseller.max_beli',$param['query1']);
+            $this->db->or_like('kb_label_produk.nama_label',$param['query1']);
+            $this->db->or_like('kb_reseller_type.nama_type',$param['query1']);
+        }
+        $this->db->join('kb_reseller_type','kb_diskon_reseller.type_reseller=kb_reseller_type.id_typereseller','left');
+        $this->db->join('kb_label_produk','kb_diskon_reseller.id_label=kb_label_produk.id_label','left');
+        return $this->db->get('kb_diskon_reseller')->num_rows();
+    }
+
+    function get_data_edit($id)
+    {
+        $this->db->select('*');
+        $this->db->from('kb_diskon_reseller');
+        $this->db->where('id_diskon', $id);
+
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result;
+    }
+    
+    function cekminmax($min,$max) {
+        $this->db->select('id_diskon');
+        $this->db->from('kb_diskon_reseller');
+        $this->db->where('((min_beli BETWEEN '.$min.' and '.$max.') OR (max_beli BETWEEN '.$min.' and '.$max.'))'
+                . ' OR (('.$min.' BETWEEN min_beli and max_beli) OR ('.$max.' BETWEEN min_beli and max_beli))');
+
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result;
+    }
+    
+     function get_diskon($id,$user,$jml)
+    {
+         $where = $jml." >= `a`.`min_beli`";
+        $this->db->select('a.diskon,a.min_beli');
+        $this->db->from('kb_diskon_reseller as a');
+        $this->db->join('kb_products AS b','a.id_label = b.id_label','left');
+        $this->db->join('kb_usertypereseller AS c','a.type_reseller = c.reseller_type','left');
+        $this->db->where('b.id_produk', $id);
+        $this->db->where('c.id_user', $user);
+        $this->db->where($where);
+
+        $query = $this->db->get();
+        $result = $query->row();
+            return $result;
+    }
+
+    function save_data($data)
+    {
+        $query = $this->db->insert('kb_diskon_reseller', $data);
+        return $query;
+    }
+
+    function update_data($id,$data)
+    {
+        $this->db->where('id_diskon', $id);
+        return $this->db->update('kb_diskon_reseller', $data);
+    }
+
+    function hapus($id)
+    {
+        $this->db->where('id_diskon', $id);
+        return $this->db->delete('kb_diskon_reseller');
+    }
+    
+    function get_diskon_($id,$user,$jml)
+    {
+        $query = $this->db->query("SELECT `a`.`diskon`, `a`.`min_beli` FROM `kb_diskon_reseller` as a"
+                . " LEFT JOIN `kb_products` AS b ON `a`.`id_label` = `b`.`id_label` "
+                . " LEFT JOIN `kb_usertypereseller` AS c ON `a`.`type_reseller` = `c`.`reseller_type` WHERE "
+                . " `b`.`id_produk` = '".$id."' AND `c`.`id_user` = '".$user."' AND (a.min_beli <= '".$jml."' and a.max_beli >= '".$jml."')");
+        return $query->row();
+    }
+    
+    
+
+}
+
+/* End of file diskon_reseller_model.php */
+/* Location: ./application/models/diskon_reseller_model.php */
+/* Please DO NOT modify this information : */
+/* Generated by Codeigniter CRUD Generator 2016-03-24 14:13:13 */
+?>

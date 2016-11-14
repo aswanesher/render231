@@ -1,0 +1,6 @@
+diff a/application/controllers/halaman.php b/application/controllers/halaman.php	(rejected hunks)
+@@ -2,3 +3,4 @@
++<?php
+ 
+     if (!defined('BASEPATH')) exit ('No direct script access allowed');
+ 
