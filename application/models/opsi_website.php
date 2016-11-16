@@ -16,6 +16,7 @@ class Opsi_website extends CI_Model {
                 $this->db->join('kb_user_detail','kb_user_detail.id = kb_users.id','LEFT');
 		$this->db->where('kb_users.user_email', $username);
 		$this->db->where('kb_users.user_pass', $password);
+		$this->db->where('kb_users.user_status', '1');
 
 		$query = $this->db->get();
 		if($query -> num_rows() == 1) {

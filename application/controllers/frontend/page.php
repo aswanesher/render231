@@ -921,7 +921,7 @@ class Page extends CI_Controller {
 
 					//Send mail 
 					if($this->email->send()) {
-						$this->session->set_flashdata('success', 'Pendaftaran berhasil, silahkan periksa email anda');
+						$this->session->set_flashdata('success', 'Pendaftaran berhasil, segera lakukan aktivasi akun melalui email yang kami kirim.');
 						redirect('p/register', 'refresh');
 					} else {
 						$this->session->set_flashdata('success', 'Pendaftaran berhasil, namun email tidak terkirim');
