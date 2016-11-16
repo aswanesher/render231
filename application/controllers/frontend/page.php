@@ -811,6 +811,129 @@ class Page extends CI_Controller {
 		show_frontend($basetemp, $view, $data);
 	}
 
+	public function changepass()
+	{
+		if($this->session->userdata('logged_in')) {
+			$dt=$this->session->userdata('logged_in');
+			
+			$ckpass = $this->users_model->get_data_edit($dt['id']);
+
+			$uid = $dt["id"];
+			$old =  $this->input->post("old_password");
+            $pass = $this->input->post("password");
+            $pass1 = $this->input->post("password1");
+
+            $oldpass = $this->encrypt->sha1($old);
+            $newpass = $this->encrypt->sha1($pass);
+
+            if($oldpass==$ckpass->user_pass) {
+            	if($pass==$pass1) {
+            		$data = array(
+		                    'user_pass'=> $newpass
+		                );
+
+		            if($this->users_model->update_data($uid,$data)) {
+		                $this->session->set_flashdata('success', 'Password telah diubah');
+		                redirect('change-password', 'refresh'); 
+		            } else {
+		                $this->session->set_flashdata('error', 'Password gagal diubah!');
+		                redirect('change-password', 'refresh');
+		            }
+            	} else {
+            		$this->session->set_flashdata('error', 'Password baru tidak sama');
+                	redirect('change-password', 'refresh');
+            	}
+            } else {
+            	$this->session->set_flashdata('error', 'Password lama salah');
+                redirect('change-password', 'refresh');
+            }
+		}
+	}
+
+	public function registerprocess()
+	{
+		$this->load->library('email');
+		$datas=$this->opsi_website->getdata();
+		$this->load->model('users_model');
+
+		$r=$this->users_model->cekid();
+		$idnya = $r->ID+1;
+
+		// Validasi form
+		$nama_lengkap=$this->form_validation->set_rules('nama_lengkap', 'Nama Lengkap', 'required|xss_clean');
+		$email=$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean');
+		$passwd=$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
+		$passwd1=$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|xss_clean');
+                    
+		$nmf=$this->input->post('nama_lengkap');
+		$emailf=$this->input->post('email');
+		$passwdf=$this->input->post('password');
+		$passwdf1=$this->input->post('confirm_password');
+		$alamatf=$this->input->post('alamat');
+		$teleponf=$this->input->post('telp');
+		$handphonef=$this->input->post('nope');
+		$passwordf=$this->encrypt->sha1($passwdf);
+		$passwordf1=$this->encrypt->sha1($passwdf1);
+		$todayf = date("Y-m-d H:i:s");
+		$activationkeyf = $this->encrypt->sha1($emailf."-".$todayf);
+		
+		$ckmail = $this->users_model->cekemail($emailf);
+
+		if($ckmail->user_email=='') {
+
+			if($passwdf==$passwdf1) {
+				$inputusers = array(
+					'ID' => $idnya,
+					'user_pass' => $passwordf,
+					'user_email' => $emailf,
+					'user_registered' => $todayf,
+					'user_activation_key' => $activationkeyf,
+					'user_status' => '0',
+					'user_type' => '3'
+				);
+				if(!$this->users_model->save_data($inputusers)) {
+					redirect('p/register','refresh');
+		            return;
+		        }
+
+					$inputdetailusers = array(
+						'ID' => $idnya,
+						'name' => $nmf,
+						'address' => $alamatf,
+						'phone' => $teleponf,
+						'cellphone' => $handphonef,
+					);
+
+				if($this->users_model->save_detail($inputdetailusers)) {
+					$from_email = "aswansetiawan01@gmail.com"; 
+
+					$this->email->from($from_email, 'Agus Setiawan'); 
+					$this->email->to($emailf);
+					$this->email->subject('Email Test'); 
+					$this->email->message('Testing the email class.'); 
+
+					//Send mail 
+					if($this->email->send()) {
+						$this->session->set_flashdata('success', 'Pendaftaran berhasil, silahkan periksa email anda');
+						redirect('p/register', 'refresh');
+					} else {
+						$this->session->set_flashdata('success', 'Pendaftaran berhasil, namun email tidak terkirim');
+						redirect('p/register', 'refresh');
+					}
+				} else {
+					$this->session->set_flashdata('error', 'Pendaftaran gagal');
+					redirect('p/register', 'refresh');
+				}
+			} else {
+				$this->session->set_flashdata('error', 'Password tidak sama!');
+				redirect('p/register', 'refresh');
+			}
+		} else {
+			$this->session->set_flashdata('error', 'Email sudah terdaftar');
+			redirect('p/register', 'refresh');
+		}
+	}
+
 	////////// PROSES LOGIN ////////////
 	public function loginproses() {
 

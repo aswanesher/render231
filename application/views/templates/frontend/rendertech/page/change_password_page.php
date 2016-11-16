@@ -4,7 +4,26 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Ubah Kata Sandi</div>
                 <div class="panel-body">
-                    <form role="form" id="changePassword" action="javascript:void(0);" enctype="multipart/form-data">
+                    <?php
+        
+                    if (!empty($this->session->flashdata('error'))) {
+                        echo "<div class='alert alert-danger'>";
+                        echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
+                        </button>';
+                        echo "<b>".$this->session->flashdata('error')."</b>";
+                        echo "</div>";
+                    }
+
+                    if (!empty($this->session->flashdata('success'))) {
+                        echo "<div class='alert alert-success'>";
+                        echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
+                        </button>';
+                        echo "<b>".$this->session->flashdata('success')."</b>";
+                        echo "</div>";
+                    }
+                    
+                    ?>
+                    <form role="form" action="<?php echo base_url('change-password-process');?>" enctype="multipart/form-data" method="post">
                     	<input type="hidden" value="" name="idp">
                         <div class="form-group">
                             <div class="input-group login-input">
