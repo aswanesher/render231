@@ -33,7 +33,7 @@
                                 ?></p>
                                 <p>
                                     <div class="btn-group">
-                                            <a href="<?php echo base_url();?>products/<?php echo $prod->seo_url?>" class="btn btn-success">Pesan Produk</a>
+                                            <a href="<?php echo base_url();?>orderproduct/<?php echo $prod->seo_url?>" class="btn btn-success">Pesan Produk</a>
                                     </div>
                                 </p>
                             </div>

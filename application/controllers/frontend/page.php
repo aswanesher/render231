@@ -648,6 +648,127 @@ class Page extends CI_Controller {
 		show_frontend($basetemp, $view, $data);
 	}
 
+	public function ubah_profil_user()
+	{
+		if($this->session->userdata('logged_in')) {
+			$dt=$this->session->userdata('logged_in');
+			$uid = $dt["id"];
+			$nama_lengkap =  $this->input->post("nama_lengkap");
+            $telp = $this->input->post("telp");
+            $alamat = $this->input->post("alamat");
+
+            $data = array(
+                    'name'=> $nama_lengkap,
+                    'address'=> $alamat,
+                    'phone'=>$telp
+                );
+
+            if($this->users_model->update_detail($uid,$data)) {
+                $this->session->set_flashdata('success', 'Data telah diubah');
+                redirect('member-profile', 'refresh'); 
+            } else {
+                $this->session->set_flashdata('error', 'Data telah diubah!');
+                redirect('member-profile', 'refresh');
+            }
+		}
+	}
+
+	public function order_product_page($a)
+	{
+		if($this->session->userdata('logged_in')) {
+			$datas=$this->opsi_website->getdata();
+			$data['judul']=$datas->website_title;
+			$data['company']=$datas->company_name;
+			$data['website_desc']=$datas->website_desc;
+			$data['meta_desc']=$datas->meta_desc;
+			$data['meta_keywords']=$datas->meta_keywords;
+			$data['bbm']=$datas->bbm_pin;
+			$data['whatsapp']=$datas->whatsapp_no;
+			$data['telegram']=$datas->telegram_no;
+			$data['contact_email']=$datas->contact_email;
+			$data['address']=$datas->contact_address;
+			$data['phone']=$datas->contact_phone;
+			$data['cellphone']=$datas->contact_cellphone;
+			$data['fb']=$datas->sosmed_fb;
+			$data['twitter']=$datas->sosmed_twitter;
+			$data['ig']=$datas->sosmed_instagram;
+			$data['gplus']=$datas->sosmed_gplus;
+			$data['wlogo']=$datas->logo;
+			$data['theme_name']=$datas->template;
+			$data['wfavicon']=$datas->favicon;
+			$data['analytics']=$datas->google_analytics;
+			$data['pixel']=$datas->facebook_pixel;
+			$data['gmap']=$datas->gmap_iframe;
+			$data['judul_panel']="Dashboard";
+
+			// Get Produk Widget
+			$produk=$this->widgets_model->get_data_filter('product_w');
+			$data['produk_widget']=$produk;
+			if(!empty($produk)) {
+				$data['prod_caption']=$produk->konten_text_widget;
+				$explode=explode('/', $produk->url);
+				$data['prod_url']='products';
+				$data['prod_list_url']='p/katalog-produk';
+			}
+			$dtproduk=$this->produk_model->get_data_widget();
+			$data['produk_widget_list']=$dtproduk;
+			$data['size'] = "12";
+			// End Produk Widget
+
+			$menu=$this->menu_model->get_data_frontend();
+			$data['menu']=$menu;
+
+			$data['page_title']='Data User';
+
+			$basetemp = "templates/frontend/".$datas->template."/";
+			$data['temp'] = $basetemp;
+			$view = "templates/frontend/".$datas->template."/";
+			$data['hal'] = "page/order_page";
+			show_frontend($basetemp, $view, $data);
+		}
+	}
+
+	public function ubah_foto_user()
+	{
+		if($this->session->userdata('logged_in')) {
+			$this->load->library('upload');
+			$dt=$this->session->userdata('logged_in');
+
+			$uid = $dt["id"];
+	        $nmfile = "file_".time(); //nama file saya beri nama langsung dan diikuti fungsi time
+	        $config['upload_path'] = './uploads/images/'; //path folder
+	        $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp'; //type yang dapat diakses bisa anda sesuaikan
+	        $config['max_size'] = '1024'; //maksimum besar file 2M
+	        $config['max_width']  = '960'; //lebar maksimum 1288 px
+	        $config['max_height']  = '960'; //tinggi maksimu 768 px
+	        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+	 
+	        $this->upload->initialize($config);
+
+            if($_FILES['filefoto']['name'])
+        	{
+        		if ($this->upload->do_upload('filefoto'))
+            	{
+            		$gbr = $this->upload->data();
+	                $data = array(
+	                  'user_pic' =>'/uploads/images/'.$gbr['file_name']
+	                );
+	 
+	                if($this->users_model->update_detail($uid,$data)) {
+		                $this->session->set_flashdata('success', 'Foto diubah');
+		                redirect('member-profile', 'refresh'); 
+		            } else {
+		                $this->session->set_flashdata('error', 'Foto gagal diubah');
+		                redirect('member-profile', 'refresh');
+		            } 
+            	} else {
+	                $this->session->set_flashdata('error', 'Foto gagal diupload');
+		            redirect('member-profile', 'refresh');
+	            }
+        	}
+		}
+	}
+
 	public function change_password_page()
 	{
 		$datas=$this->opsi_website->getdata();

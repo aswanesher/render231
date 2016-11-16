@@ -29,7 +29,7 @@
                                 ?></p>
                                 <p>
                                     <div class="btn-group">
-                                            <a href="<?php echo base_url();?>products/<?php echo $prod->seo_url?>" class="btn btn-success"><i class="fa fa-shopping-cart"></i> Pesan</a>
+                                            <a href="<?php echo base_url();?>orderproduct/<?php echo $prod->seo_url?>" class="btn btn-success"><i class="fa fa-shopping-cart"></i> Pesan</a>
                                     </div>
                                 </p>
                             </div>

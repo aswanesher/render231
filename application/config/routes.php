@@ -54,6 +54,9 @@ $route["logout"] = 'frontend/page/logout';
 $route["member-profile"] = 'frontend/page/user_profile_page';
 $route["change-password"] = 'frontend/page/change_password_page';
 $route["forgot-password"] = 'frontend/page/forgot_password_page';
+$route["orderproduct/(.*)"] = 'frontend/page/order_product_page/$1';
+$route["member-profile/change-user-process"] = 'frontend/page/ubah_profil_user';
+$route["member-profile/upload-picture"] = 'frontend/page/ubah_foto_user';
 $route["registerprocess/(.*)"] = 'frontend/page/reg_save/$1';
 $route["testimonialprocess/(.*)"] = 'frontend/page/testimonial_save/$1';
 

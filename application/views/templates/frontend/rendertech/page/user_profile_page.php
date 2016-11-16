@@ -12,23 +12,45 @@ $r = $getdt->row();
             	</div>
                 <div class="col-lg-12 col-sm-12 hero-feature">
                 <div id="files">
-                        <img src="<?php echo $r->user_pic?>" class="img-thumbnail" height="100" width="100%"/>
-                        </div>
-                          <div id="upload" class="btn btn-success btn-sm" style="margin-top:10px; width:100%;" title="Pilih"><i class="fa fa-camera"></i> Ubah Foto  </div> 
-				
-                        </div>
+                <img src="<?php echo base_url().$r->user_pic?>" class="img-thumbnail" height="100" width="100%"/>
+                </div>
+                <form action="<?php echo base_url()?>member-profile/upload-picture" method="post" enctype="multipart/form-data">
+                <div id="upload" class="btn btn-success btn-sm" style="margin-top:10px; width:100%;" title="Pilih"><input type="file" class="form-control" name="filefoto" class="form-control"> 
+                <button type="submit" class="btn btn-danger">Upload</button>    
+                </div> 
+                </form>
+                </div>
 
         	</div>
         	
         	<div class="clearfix visible-sm"></div>
 			<!-- Cart -->
         	<div class="col-lg-9 col-md-9 col-sm-12">
+                <?php
+        
+                if (!empty($this->session->flashdata('error'))) {
+                    echo "<div class='alert alert-danger'>";
+                    echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
+                    </button>';
+                    echo "<b>".$this->session->flashdata('error')."</b>";
+                    echo "</div>";
+                }
+
+                if (!empty($this->session->flashdata('success'))) {
+                    echo "<div class='alert alert-success'>";
+                    echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
+                    </button>';
+                    echo "<b>".$this->session->flashdata('success')."</b>";
+                    echo "</div>";
+                }
+                
+                ?>
         		<div class="col-lg-12 col-sm-12">
             		<span class="title">PROFIL PELANGGAN <small class="pull-right"> E-Mail : <?php echo $r->user_email;?></small></span>
                      <div id="informasi" style="display:none;"></div>
             	</div>
                 
-                 <form role="form" id="profil_pelanggan" action="javscript:void(0);" method="post" enctype="multipart/form-data">
+                 <form role="form" action="<?php echo base_url('member-profile/change-user-process');?>" method="post" enctype="multipart/form-data">
                  <input type="hidden" name="id_pelanggan" value="<?php echo $r->ID; ?>" class="form-control required" />
                   
 	            <div class="col-lg-12 col-sm-12 hero-feature">

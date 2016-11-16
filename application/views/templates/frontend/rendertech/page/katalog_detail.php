@@ -54,7 +54,7 @@
 									<div class="clearfix"></div>
 									<hr/>
 									<div class="col-xs-12 input-qty-detail">
-										<a class="btn btn-default pull-left" href="<?php echo base_url();?>products/<?php echo $dtprod->seo_url?>">Pesan Produk</a>
+										<a class="btn btn-default pull-left" href="<?php echo base_url();?>orderproduct/<?php echo $dtprod->seo_url?>">Pesan Produk</a>
 									</div>
 									<div class="clearfix"></div><br/>
 									

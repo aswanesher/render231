@@ -96,7 +96,7 @@
                             <ul class="dropdown-menu " id="shop" role="menu" >
                             <li style="text-align:center;">
                                 <div id="files1">
-                                    <img src="<?php echo $foto->user_pic;?>" class="img-thumbnail" height="100" width="80%"/>
+                                    <img src="<?php echo base_url().$foto->user_pic;?>" class="img-thumbnail" height="100" width="80%"/>
                                 </div>
                             </li>
                             <li class="divider"></li>
