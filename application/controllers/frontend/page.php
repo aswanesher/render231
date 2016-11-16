@@ -878,8 +878,7 @@ class Page extends CI_Controller {
 		$activationkeyf = $this->encrypt->sha1($emailf."-".$todayf);
 		
 		$ckmail = $this->users_model->cekemail($emailf);
-
-		if($ckmail->user_email=='') {
+		if(empty($ckmail->user_email)) {
 
 			if($passwdf==$passwdf1) {
 				$inputusers = array(
@@ -905,12 +904,20 @@ class Page extends CI_Controller {
 					);
 
 				if($this->users_model->save_detail($inputdetailusers)) {
-					$from_email = "aswansetiawan01@gmail.com"; 
-
-					$this->email->from($from_email, 'Agus Setiawan'); 
-					$this->email->to($emailf);
-					$this->email->subject('Email Test'); 
-					$this->email->message('Testing the email class.'); 
+					// Kirim Email
+					$this->load->library('email'); // load email library
+				    $this->email->from('no-reply@Render231.com', 'Render231');
+				    $this->email->to($emailf);
+				    //$this->email->cc('kangcipkusuma@gmail.com'); 
+				    $this->email->subject('Registrasi member Render231');
+				    $message="Hai!\n\n";
+				    $message.="Selamat ".$nmf.", Anda telah terdaftar sebagai member di Render231";
+				    $message.="\n\nNama : ".$nmf;
+				    $message.="\nEmail : ".$emailf;
+				    $message.="\nKode Aktivasi : ".$activationkeyf;
+				    $message.="\n\n\nSalam kami\n";
+				    $message.="Tim Render231";
+				    $this->email->message($message);
 
 					//Send mail 
 					if($this->email->send()) {
