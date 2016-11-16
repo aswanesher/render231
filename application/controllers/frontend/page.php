@@ -906,16 +906,16 @@ class Page extends CI_Controller {
 				if($this->users_model->save_detail($inputdetailusers)) {
 					// Kirim Email
 					$this->load->library('email'); // load email library
-				    $this->email->from('no-reply@Render231.com', 'Render231');
+				    $this->email->from('no-reply@render231.com', 'Render231');
 				    $this->email->to($emailf);
 				    //$this->email->cc('kangcipkusuma@gmail.com'); 
 				    $this->email->subject('Registrasi member Render231');
-				    $message="Hai!\n\n";
-				    $message.="Selamat ".$nmf.", Anda telah terdaftar sebagai member di Render231";
-				    $message.="\n\nNama : ".$nmf;
-				    $message.="\nEmail : ".$emailf;
-				    $message.="\nKode Aktivasi : ".$activationkeyf;
-				    $message.="\n\n\nSalam kami\n";
+				    $message="Hai!<br><br>";
+				    $message.="Selamat <strong>".$nmf."</strong>, Anda telah terdaftar sebagai member <strong>Render231</strong>";
+				    $message.="<br><br>Nama : ".$nmf;
+				    $message.="<br>Email : ".$emailf;
+				    $message.="<br>Kode Aktivasi : ".base_url()."activate/".$activationkeyf;
+				    $message.="<br><br><br>Salam kami<br>";
 				    $message.="Tim Render231";
 				    $this->email->message($message);
 
@@ -926,6 +926,7 @@ class Page extends CI_Controller {
 					} else {
 						$this->session->set_flashdata('success', 'Pendaftaran berhasil, namun email tidak terkirim');
 						redirect('p/register', 'refresh');
+						//show_error($this->email->print_debugger());
 					}
 				} else {
 					$this->session->set_flashdata('error', 'Pendaftaran gagal');
