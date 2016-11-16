@@ -4,23 +4,24 @@
                 <div class="panel-body">
                     <?php //echo form_open('page/loginproses'); ?>
                     <?php
-                    echo "<div class='error_msg'>";
-                    if (isset($error_message)) {
-                        echo $error_message;
+                    if (!empty($this->session->flashdata('error'))) {
+                        echo "<div class='alert alert-danger'>";
+                        echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
+                        </button>';
+                        echo "<b>".$this->session->flashdata('error')."</b>";
+                        echo "</div>";
                     }
-                    echo validation_errors();
-                    echo "</div>";
                     ?>
                     <form role="form" action="<?php echo base_url();?>loginproses" method="post">
                         <div class="form-group">
                             <div class="input-group login-input">
                                 <span class="input-group-addon"><i class="fa fa-user"  style="width:14px;"></i></span>
-                                <input type="text" class="form-control required" name="email" placeholder="Email">
+                                <input type="text" class="form-control required" name="email" placeholder="Email" required>
                             </div>
                             <br>
                             <div class="input-group login-input">
                                 <span class="input-group-addon"><i class="fa fa-lock"  style="width:14px;"></i></span>
-                                <input type="password" class="form-control required" name="password" placeholder="Kata Sandi">
+                                <input type="password" class="form-control required" name="password" placeholder="Kata Sandi" required>
                             </div>
                             <div class="checkbox">
                                 <label>

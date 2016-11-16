@@ -725,6 +725,8 @@ class Page extends CI_Controller {
 			$view = "templates/frontend/".$datas->template."/";
 			$data['hal'] = "page/order_page";
 			show_frontend($basetemp, $view, $data);
+		} else {
+			redirect('user-login', 'refresh');
 		}
 	}
 
@@ -842,8 +844,8 @@ class Page extends CI_Controller {
      			   redirect(base_url(), 'refresh');
 			    }
 			} else {
-				$data['error_message']= $this->lang->line('error_message_login');
-				$this->load->view('login_page', $data);
+				$this->session->set_flashdata('error', 'Login gagal');
+		        redirect('user-login', 'refresh');
 			}
 		}
 	}
