@@ -74,12 +74,12 @@
                     <div class="form-group">
                         <div class="input-group login-input">
                             <span class="input-group-addon" ><i class="fa fa-user" style="width:14px;"></i></span>
-                            <input type="text" class="form-control required" name="email" placeholder="Email">
+                            <input type="text" class="form-control required" name="email" placeholder="Email" required>
                         </div>
                         <br>
                         <div class="input-group login-input">
                             <span class="input-group-addon"><i class="fa fa-lock" style="width:14px;"></i> </span>
-                            <input type="password" class="form-control required" name="password" placeholder="Kata Sandi">
+                            <input type="password" class="form-control required" name="password" placeholder="Kata Sandi" required>
                         </div>
                         <div class="checkbox">
                             <label>

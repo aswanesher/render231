@@ -12,7 +12,11 @@ $r = $getdt->row();
             	</div>
                 <div class="col-lg-12 col-sm-12 hero-feature">
                 <div id="files">
+                <?php if($r->user_pic!="") { ?>
                 <img src="<?php echo base_url().$r->user_pic?>" class="img-thumbnail" height="100" width="100%"/>
+                <?php } else { ?>
+                <img src="<?php echo base_url()."uploads/no_images.jpg";?>" class="img-thumbnail" height="100" width="100%"/>
+                <?php } ?>
                 </div>
                 <form action="<?php echo base_url()?>member-profile/upload-picture" method="post" enctype="multipart/form-data">
                 <div id="upload" class="btn btn-success btn-sm" style="margin-top:10px; width:100%;" title="Pilih"><input type="file" class="form-control" name="filefoto" class="form-control"> 

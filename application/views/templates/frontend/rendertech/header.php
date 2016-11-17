@@ -96,7 +96,11 @@
                             <ul class="dropdown-menu " id="shop" role="menu" >
                             <li style="text-align:center;">
                                 <div id="files1">
+                                <?php if($foto->user_pic!="") { ?>
                                     <img src="<?php echo base_url().$foto->user_pic;?>" class="img-thumbnail" height="100" width="80%"/>
+                                <?php } else { ?>    
+                                    <img src="<?php echo base_url()."uploads/no_images.jpg";?>" class="img-thumbnail" height="100" width="80%"/>
+                                <?php } ?>
                                 </div>
                             </li>
                             <li class="divider"></li>

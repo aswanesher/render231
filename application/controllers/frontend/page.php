@@ -673,6 +673,120 @@ class Page extends CI_Controller {
 		}
 	}
 
+	public function prosesaktivasi($a)
+	{
+		if($a!="") {
+			$ck = $this->users_model->cekaktivasikode($a);
+			
+			$uid = $ck->ID;
+			$today = date("Y-m-d H:i:s");
+			$activationkeybaru = $this->encrypt->sha1($ck->user_email."-".$today);
+
+			if($ck->user_activation_key!="") 
+			{
+				$data = array(
+                    'user_status' => '1',
+                    'user_activation_key' => $activationkeybaru
+                );			
+
+                if($this->users_model->update_data($uid,$data)) {
+	                $this->session->set_flashdata('success', 'Aktivasi berhasil, silahkan login');
+	                redirect('user-login', 'refresh'); 
+	            } else {
+	                $this->session->set_flashdata('error', 'Aktivasi gagal, kode tidak terdaftar');
+	                redirect('user-login', 'refresh');
+	            }	
+			}
+		} else {
+			redirect('user-login', 'refresh');
+		}
+	}
+
+	public function proseslupapassword()
+	{
+		$email = $this->input->post('email');
+		$ckmail = $this->users_model->cekemail($email);
+
+		if(empty($ckmail->user_email)) {
+			$this->session->set_flashdata('error', 'Maaf, email tidak terdaftar');
+	        redirect('forgot-password', 'refresh');
+		} else {
+	        // Kirim Email
+			$this->load->library('email'); // load email library
+		    $this->email->from('no-reply@render231.com', 'Render231');
+		    $this->email->to($email);
+		    //$this->email->cc('kangcipkusuma@gmail.com'); 
+		    $this->email->subject('Ubah password member Render231');
+		    $message="Hai!<br><br>";
+		    $message.="Anda telah meminta proses perubahan kata sandi. Silahkan klik tautan dibawah ini untuk merubah password<br><br>";
+		    $message.="Kode Aktivasi : ".base_url()."password-recovery/".$ckmail->user_activation_key;
+		    $message.="<br><br><br>Salam kami<br>";
+		    $message.="Tim Render231";
+		    $this->email->message($message);
+
+			//Send mail 
+			if($this->email->send()) {
+				$this->session->set_flashdata('success', 'Email berhasil dikirim, segera lakukan perubahan password.');
+				redirect('forgot-password', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Email gagal dikirim');
+				redirect('forgot-password', 'refresh');
+				//show_error($this->email->print_debugger());
+			}		
+		}
+	}
+
+	public function recovery_password($a)
+	{
+		if(!empty($a)) {
+			//$email = $this->input->post('email');
+			$ckact = $this->users_model->cekaktivasikode($a);
+			$datas=$this->opsi_website->getdata();
+			$data['judul']=$datas->website_title;
+			$data['company']=$datas->company_name;
+			$data['website_desc']=$datas->website_desc;
+			$data['meta_desc']=$datas->meta_desc;
+			$data['meta_keywords']=$datas->meta_keywords;
+			$data['bbm']=$datas->bbm_pin;
+			$data['whatsapp']=$datas->whatsapp_no;
+			$data['telegram']=$datas->telegram_no;
+			$data['contact_email']=$datas->contact_email;
+			$data['address']=$datas->contact_address;
+			$data['phone']=$datas->contact_phone;
+			$data['cellphone']=$datas->contact_cellphone;
+			$data['fb']=$datas->sosmed_fb;
+			$data['twitter']=$datas->sosmed_twitter;
+			$data['ig']=$datas->sosmed_instagram;
+			$data['gplus']=$datas->sosmed_gplus;
+			$data['wlogo']=$datas->logo;
+			$data['theme_name']=$datas->template;
+			$data['wfavicon']=$datas->favicon;
+			$data['analytics']=$datas->google_analytics;
+			$data['pixel']=$datas->facebook_pixel;
+			$data['gmap']=$datas->gmap_iframe;
+			$data['judul_panel']="Dashboard";
+
+			$menu=$this->menu_model->get_data_frontend();
+			$data['menu']=$menu;
+
+			$data['page_title']='Ubah Password';
+
+			if(empty($ckact->user_activation_key)) {
+				$this->session->set_flashdata('error', 'Maaf, kode tidak cocok. Silahkan coba kembali.');
+		        redirect('forgot-password', 'refresh');
+			} else {
+				$data['recover_code'] = $a;
+				$basetemp = "templates/frontend/".$datas->template."/";
+				$data['temp'] = $basetemp;
+				$view = "templates/frontend/".$datas->template."/";
+				$data['hal'] = "page/recover_password";
+				show_frontend($basetemp, $view, $data);
+			}
+		} else {
+			redirect(base_url(), 'refresh');
+		}
+	}
+
 	public function order_product_page($a)
 	{
 		if($this->session->userdata('logged_in')) {
@@ -848,6 +962,63 @@ class Page extends CI_Controller {
                 redirect('change-password', 'refresh');
             }
 		}
+	}
+
+	public function newpass()
+	{
+		$reccode =  $this->input->post("recover_code");
+		$ck = $this->users_model->cekaktivasikode($reccode);
+		$uid = $ck->ID;
+        $pass = $this->input->post("password");
+        $pass1 = $this->input->post("password1");
+
+        $todayf = date("Y-m-d H:i:s");
+		$activationkey = $this->encrypt->sha1($ck->user_email."-".$todayf);
+
+        $newpass = $this->encrypt->sha1($pass);
+    	
+    	if(empty($ck->user_activation_key)) {
+    		$this->session->set_flashdata('error', 'Kode salah');
+        	redirect('forgot-password', 'refresh');
+    	} else {
+    		if($pass==$pass1) {
+	    		$data = array(
+	                    'user_pass'=> $newpass,
+	                    'user_activation_key'=>$activationkey
+	                );
+
+	            if($this->users_model->update_data($uid,$data)) {
+	            	// Kirim Email
+					$this->load->library('email'); // load email library
+				    $this->email->from('no-reply@render231.com', 'Render231');
+				    $this->email->to($ck->user_email);
+				    //$this->email->cc('kangcipkusuma@gmail.com'); 
+				    $this->email->subject('Ubah password member Render231');
+				    $message="Hai!<br><br>";
+				    $message.="Kata sandi anda telah berubah pada ".$todayf.". Silahkan login kembali dengan password<br><br>";
+				    $message.="Password : ".$pass;
+				    $message.="<br><br><br>Salam kami<br>";
+				    $message.="Tim Render231";
+				    $this->email->message($message);
+
+					//Send mail 
+					if($this->email->send()) {
+						$this->session->set_flashdata('success', 'Password telah diubah');
+	                	//redirect('user-login', 'refresh'); 
+					} else {
+						$this->session->set_flashdata('success', 'Password telah diubah');
+	                	//redirect('user-login', 'refresh');
+					}	
+
+	            } else {
+	                $this->session->set_flashdata('error', 'Password gagal diubah!');
+	                //redirect('forgot-password', 'refresh');
+	            }
+	    	} else {
+	    		$this->session->set_flashdata('error', 'Password baru tidak sama');
+	        	//redirect('forgot-password', 'refresh');
+	    	}
+    	}
 	}
 
 	public function registerprocess()

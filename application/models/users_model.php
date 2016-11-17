@@ -131,6 +131,17 @@ class Users_model extends CI_Model {
         return $result;
     }
 
+    function cekaktivasikode($act)
+    {
+        $this->db->select('*');
+        $this->db->from('kb_users');
+        $this->db->where("user_activation_key", $act);
+
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result;
+    }
+
     function cekfoto($id)
     {
         $this->db->select('user_pic');

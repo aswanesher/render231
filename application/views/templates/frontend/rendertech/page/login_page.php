@@ -4,6 +4,14 @@
                 <div class="panel-body">
                     <?php //echo form_open('page/loginproses'); ?>
                     <?php
+                    if (!empty($this->session->flashdata('success'))) {
+                        echo "<div class='alert alert-success'>";
+                        echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
+                        </button>';
+                        echo "<b>".$this->session->flashdata('success')."</b>";
+                        echo "</div>";
+                    }
+
                     if (!empty($this->session->flashdata('error'))) {
                         echo "<div class='alert alert-danger'>";
                         echo '<button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i>
