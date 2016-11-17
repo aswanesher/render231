@@ -1004,19 +1004,19 @@ class Page extends CI_Controller {
 					//Send mail 
 					if($this->email->send()) {
 						$this->session->set_flashdata('success', 'Password telah diubah');
-	                	//redirect('user-login', 'refresh'); 
+	                	redirect('user-login', 'refresh'); 
 					} else {
 						$this->session->set_flashdata('success', 'Password telah diubah');
-	                	//redirect('user-login', 'refresh');
+	                	redirect('user-login', 'refresh');
 					}	
 
 	            } else {
 	                $this->session->set_flashdata('error', 'Password gagal diubah!');
-	                //redirect('forgot-password', 'refresh');
+	                redirect('forgot-password', 'refresh');
 	            }
 	    	} else {
 	    		$this->session->set_flashdata('error', 'Password baru tidak sama');
-	        	//redirect('forgot-password', 'refresh');
+	        	redirect('forgot-password', 'refresh');
 	    	}
     	}
 	}
