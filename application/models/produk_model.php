@@ -26,6 +26,16 @@ class Produk_model extends CI_Model
         $result = $query->row();
         return $result;
     }
+    function get_data_by_seo($seo)
+    {
+        $this->db->select('*');
+        $this->db->from('kb_products');
+        $this->db->where('seo_url', $seo);
+
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result;
+    }
     function get_data_prd()
     {
         $this->db->select('*');

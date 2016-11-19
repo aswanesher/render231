@@ -1,5 +1,6 @@
 // JavaScript Document
 $(document).ready(function(e){
+	var url = 'http://localhost/render231/';
 	//----------------------------------------------Proses Form Pesanan-------------------------------------------//
 	$("#panjang").keyup(function(){ 
 		hitungPesanan();
@@ -39,33 +40,39 @@ $(document).ready(function(e){
 		var btn = $("#jasa"); 
 		if(kodeJasa == "N"){
 			$("#fieldJasa").show();
+			$("#tanpajasadesign").hide();
 			$(".kodeJasa").val('Y'); 
 			$(".hargaJasa").val(hargaJ); 
 			btn.removeClass('btn btn-xs btn-danger');
 			btn.addClass('btn btn-xs btn-success');
-			btn.html('<i class="fa fa-check"></i>');
-			$("#id_model").removeClass('form-control');
-			$("#id_model").addClass('form-control required');
-			$("#judul").removeClass('form-control');
-			$("#judul").addClass('form-control required');
-			$("#isi").removeClass('form-control');
-			$("#isi").addClass('form-control required');
+			btn.html('<i class="fa fa-check"></i> Ya');
+			$("#isi").attr('required','required');
+			$("#judul").attr('required','required');
+			$("#id_model").attr('required','required');
+			$("#gbr1").attr('required','required');
+			$("#gbr2").attr('required','required');
+			$("#gbr3").attr('required','required');
+			$("#filenya").removeAttr('required');
+			$("#keterangannya").removeAttr('required');
 			hitungPesanan();
 		}else{
 			$("#id_model").val($("#id_model option:contains('Pilih Model--')").val());
 			$("#gambar").html('');
 			$("#fieldJasa").hide();
+			$("#tanpajasadesign").show();
 			$(".kodeJasa").val('N');
 			$(".hargaJasa").val('0'); 
 			btn.removeClass('btn btn-xs btn-success');
 			btn.addClass('btn btn-xs btn-danger');
-			btn.html('<i class="fa fa-close"></i>'); 
-			$("#id_model").removeClass('form-control required');
-			$("#id_model").addClass('form-control');
-			$("#judul").removeClass('form-control required');
-			$("#judul").addClass('form-control');
-			$("#isi").removeClass('form-control required');
-			$("#isi").addClass('form-control');
+			btn.html('<i class="fa fa-close"></i> Tidak'); 
+			$("#isi").removeAttr('required');
+			$("#judul").removeAttr('required');
+			$("#id_model").removeAttr('required');
+			$("#gbr1").removeAttr('required');
+			$("#gbr2").removeAttr('required');
+			$("#gbr3").removeAttr('required');
+			$("#filenya").attr('required','required');
+			$("#keterangannya").attr('required','required');
 			hitungPesanan();
 		}
 	});
@@ -348,21 +355,22 @@ $(document).ready(function(e){
 				required:"Mohon diisi",
 			},
 		},
-	   errorPlacement: function(error, element) {
+	   	errorPlacement: function(error, element) {
 			error.appendTo(element.parent("span"));
 		},
 		submitHandler: function(form) {
 			var dataForm = new FormData(document.getElementById("formInsertPesanan"));
 				$.ajax({
 					type		: "POST",
-					url			: "Proses-Belanja-I",
+					url			: "prosespesanan",
 					data		: dataForm,
 					dataType	: "json",
 					cache		: false,
 					contentType : false,
 					processData : false, // Don't process the files
 					beforeSend	: function(){
-					  $("#preload").html('<img src="lib_/images/255.gif">');
+					  $("#preload").html('<img src="'+url+'assets/frontend/rendertech/lib/images/255.gif">');
+					  $("#tblpesan").attr('disabled','disabled');
 					},
 					timeout:3000,
 					success: function(json){
@@ -370,53 +378,17 @@ $(document).ready(function(e){
 						var pesan  = json.pesan;
 						var jumlah = json.jumlah;
 						if(status == 'success'){
-							$("#qtyShop").html(json.jumlah);
-							$("#formInsertPesanan")[0].reset();
-							setTimeout(function() {
-								$("#preload").html('');
-							}, 1500);
-							setTimeout(function() {
-								$('body,html').animate({
-									scrollTop: 0
-								});
-								$("#informasi").fadeIn(1000);
-								$("#informasi").html(pesan);
-								setTimeout(function() {
-									$("#informasi").fadeOut(500);
-									loadCart();
-									if(jumlah == 0) {
-										$(".btns-cart").hide();
-										$(".checkout").hide();
-									}else{
-										$(".btns-cart").show();
-										$(".checkout").show();
-									}
-								}, 3000);
-							 }, 2000);
-							 $("#id_model").val($("#id_model option:contains('Pilih Model--')").val());
-							 $("#gambar").html('');
-							 $("#fieldJasa").hide();
-							 $(".kodeJasa").val('N');
-							 $("#jasa").removeClass('btn btn-xs btn-success');
-							 $("#jasa").addClass('btn btn-xs btn-danger');
-							 $("#jasa").html('<i class="fa fa-close"></i>');
-						
+							$("#preload").html('');
+					  		$("#tblpesan").attr('disabled','disabled');
+					  		$("#notif").show();
+					  		$("#notif").addClass('alert alert-success alert-block');
+					  		$("#notif").html(pesan);
 						}else{
-							setTimeout(function() {
-								$("#preload").html('');
-							}, 1500);
-							setTimeout(function() {
-								$('body,html').animate({
-									scrollTop: 0
-								});
-								$("#informasi").fadeIn(1000);
-								$("#informasi").html(pesan);
-								setTimeout(function() {
-									$("#informasi").fadeOut(500);
-									loadCart();
-								}, 3000);
-							 }, 2000);
-							 
+	 						$("#preload").html('');
+					  		$("#tblpesan").attr('disabled','disabled');
+					  		$("#notif").show();
+					  		$("#notif").addClass('alert alert-success alert-block');
+					  		$("#notif").html(pesan);
 						}
 					}
 				});
@@ -1601,11 +1573,11 @@ $(document).ready(function(e){
 				var dataForm 	= $("#profil_pelanggan").serialize();
 				$.ajax({
 					type		: "POST",
-					url			: "Proses-Profil-Pelanggan",
+					url			: "page/ubah_user",
 					data		: dataForm,
 					dataType	: "json",
 					beforeSend	: function(){
-					  	$("#preload").html('<img src="lib_/images/255.gif">');
+					  	$("#preload").html('<img src="'+url+'assets/frontend/rendertech/lib/images/255.gif">');
 					},
 					timeout:3000,
 					success: function(json){
@@ -1646,7 +1618,7 @@ $(document).ready(function(e){
 		}
     });	
 	
-	$(function(){
+	/*$(function(){
 		var btnUpload=$('#upload');
 		var status = $('#status');
 		new AjaxUpload(btnUpload, {
@@ -1684,7 +1656,7 @@ $(document).ready(function(e){
 				}
 			}
 		});
-	});
+	});*/
 });
 	
 	function loadCart(){
@@ -1723,11 +1695,11 @@ $(document).ready(function(e){
 		var show = "shop";
 			$.ajax({
 				type		: "GET",
-				url	    	: "Load-Top-Cart",
+				url	    	: "load-top-cart",
 				data    	: "shop="+shop,
 				timeout 	: 3000,
 				beforeSend	:function(){
-					$("#shop").html('<li style="text-align:center; margin-bottom:10px; margin-top:10px;"> <img src="lib_/images/camera-loader.gif"> <br>Loading..</li>')
+					$("#shop").html('<li style="text-align:center; margin-bottom:10px; margin-top:10px;"> <img src="assets/frontend/rendertech/lib/images/camera-loader.gif"> <br>Loading..</li>')
 				},
 				success:function(data){
 					$("#shop").html('');
@@ -1745,7 +1717,7 @@ $(document).ready(function(e){
 		};
 		$.ajax({
 			type		: "POST",
-			url			: "Count-Order",    
+			url			: "count-order",    
 			data		: frm_data,
 			dataType	: "json",
 			success		: function(json){ 
@@ -1755,9 +1727,13 @@ $(document).ready(function(e){
 				if(status == "success"){
 					$("#harga1").val(data);
 					$("#harga").val(data1);
-				}else{
+					$("#infonya").hide();
+				}else if(status == "denied"){
 					$("#harga1").val(data);
 					$("#harga").val(data1);
+					$("#infonya").hide();
+				} else if(status == "empty") {
+					$("#infonya").show();
 				}
 			}
 		});	

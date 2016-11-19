@@ -61,8 +61,11 @@ $route["password-recovery/(.*)"] = 'frontend/page/recovery_password/$1';
 $route["orderproduct/(.*)"] = 'frontend/page/order_product_page/$1';
 $route["activate/(.*)"] = 'frontend/page/prosesaktivasi/$1';
 $route["register-process"] = 'frontend/page/registerprocess';
+$route["orderproduct/count-order"] = 'frontend/page/count_order';
+$route["orderproduct/prosespesanan"] = 'frontend/page/proses_pesanan';
 $route["member-profile/change-user-process"] = 'frontend/page/ubah_profil_user';
 $route["member-profile/upload-picture"] = 'frontend/page/ubah_foto_user';
+$route["load-top-cart"] = 'frontend/page/loadtopcart';
 $route["registerprocess/(.*)"] = 'frontend/page/reg_save/$1';
 $route["testimonialprocess/(.*)"] = 'frontend/page/testimonial_save/$1';
 

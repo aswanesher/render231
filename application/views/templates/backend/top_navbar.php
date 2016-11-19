@@ -33,7 +33,7 @@
                         $getdtfoto = $this->db->query("select user_pic from kb_user_detail where ID='".$dt['id']."'");
                         $foto = $getdtfoto->row();
 						?>
-						<img class="nav-user-photo" src="<?php echo $foto->user_pic; ?>" alt="<?php echo $va['name']; ?>" />
+						<img class="nav-user-photo" src="<?php echo base_url().$foto->user_pic; ?>" alt="<?php echo $va['name']; ?>" />
 						<span class="user-info">
 							<small>Selamat Datang,</small>
 							<?php echo $va['name']; ?>

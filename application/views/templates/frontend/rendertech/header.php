@@ -16,11 +16,31 @@
 
 	<link rel="icon" type="image/ico" href="<?php echo $wfavicon;?>">
     <link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/jquery.bxslider.css" rel="stylesheet">
     <link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/style.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/chat.css" rel="stylesheet">
 	<!--<script type="text/javascript" src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/autoCekPesanan.js"></script>-->
+    <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.js"></script>
+    <!--<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/chat.js"></script>-->
+  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/bootstrap.js"></script>
+  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.bxslider.min.js"></script>
+  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.blImageCenter.js"></script>
+    <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/bootstrap.touchspin.js"></script>
+  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.zoom.min.js"></script>
+  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/mimity.js"></script>
+    <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.validate.js"></script>
+  <!--<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/ajaxupload.3.5.js"></script>-->
+    <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/script.js"></script>
+    <script>
+        function get(content){
+            $('#confirmDelete').on('show.bs.modal', function(e) {
+                $(this).find('#rD').attr('value', $(e.relatedTarget).data('href'));
+                $('.debug-data').html('Hapus Produk: <strong>' + content + '</strong> ?');
+            });
+        }
+    </script>
 
 </head>
 <body>
@@ -65,12 +85,13 @@
                         <div class="btn-group btn-group-cart" onClick="loadTopCart();">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span class="pull-left"><i class="fa fa-shopping-cart icon-cart"></i></span>
-                                <span class="pull-left">Keranjang Belanja: <span id="qtyShop"><?//$sql_row;?></span> item(s)</span>
+                                <?php 
+                                $jml=$this->pemesanan_model->jumlahfront($dt["id"]);
+                                ?>
+                                <span class="pull-left">Jumlah Pesanan: <span id="qtyShop"><?php echo $jml;?></span> item(s)</span>
                                 <span class="pull-right"><i class="fa fa-caret-down"></i></span>
                             </button>
                             <ul class="dropdown-menu cart-content shp" id="shop" role="menu" >
-
-
                             </ul>
 
                         </div>

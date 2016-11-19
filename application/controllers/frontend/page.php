@@ -15,6 +15,9 @@ class Page extends CI_Controller {
 		$this->load->model('testimonial_model');
 		$this->load->model('user_grup_model');
 		$this->load->model('produk_model');
+		$this->load->model('bahan_model');
+		$this->load->model('template_cetak_model');
+		$this->load->model('pemesanan_model');
 		$this->load->library(array('form_validation', 'pagination'));  
 		$this->load->helper('url'); 
 		$this->load->helper('url_helper');
@@ -829,8 +832,26 @@ class Page extends CI_Controller {
 			$data['size'] = "12";
 			// End Produk Widget
 
+			// Get Bank Widget
+			$bank=$this->widgets_model->get_data_filter('bank_w');
+			if(!empty($bank)) {
+				$data['bank_widget']=$bank;
+				$data['bank']=$this->media_model->get_data_filter($bank->konten_text_id);
+				$data['bank_caption']=$bank->konten_text_widget;
+			}
+			// End Bank Widget
+
+			$prd=$this->produk_model->get_data_by_seo($a);
+
 			$menu=$this->menu_model->get_data_frontend();
+			$bahan=$this->bahan_model->get_data_frontend();
+			$model=$this->template_cetak_model->get_data_frontend();
 			$data['menu']=$menu;
+			$data['bahan']=$bahan;
+			$data['model']=$model;
+
+			$data['nama_produk'] = $prd->nama_produk;
+			$data['idp'] = $prd->id_produk;
 
 			$data['page_title']='Data User';
 
@@ -842,6 +863,39 @@ class Page extends CI_Controller {
 		} else {
 			redirect('user-login', 'refresh');
 		}
+	}
+
+	function count_order()
+	{
+		$idbhn		= $this->input->post('id_bahan');
+		$panjang	= $this->input->post('panjang');
+		$lebar 		= $this->input->post('lebar');
+		$jumlah 	= $this->input->post('jumlah');
+
+		$dt = $this->bahan_model->get_data_edit($idbhn);
+
+		// hitung
+		if(empty($dt)) {
+			$status 	= "denied";
+			$data 		= "Rp. ".number_format('0',"0",".",".");
+			$data1 		= 0;
+		} else {
+			if($jumlah>$dt->qty) {
+				$status 	= "empty";
+				$data 		= "Rp. ".number_format('0',"0",".",".");
+				$data1 		= 0;
+			} else {
+				$hrg = $dt->harga;
+				$uk = $panjang * $lebar;
+				$sub1 = $uk*$hrg;
+				$tot = $sub1*$jumlah;
+				$status = "success";
+				$data1 = $tot;
+				$data = "Rp. ".number_format($tot,"0",".",".");
+			}
+		}
+
+		echo json_encode(array('status' => $status, 'data1' => $data1, 'data' => $data));
 	}
 
 	public function ubah_foto_user()
@@ -882,6 +936,145 @@ class Page extends CI_Controller {
 		            redirect('member-profile', 'refresh');
 	            }
         	}
+		}
+	}
+
+	public function loadtopcart()
+	{
+		echo "a";
+	}
+
+	public function proses_pesanan()
+	{
+		if($this->session->userdata('logged_in')) {
+			$this->load->library('upload');
+			$dt=$this->session->userdata('logged_in');
+			$uid = $dt["id"];
+
+			$acak = rand(00000,99999);
+			$nmfile = "file_".time()."_".$acak; //nama file saya beri nama langsung dan diikuti fungsi time dan acak
+			$folder = "order_".date('d-m-y')."_".$uid;
+			if (!is_dir('uploads/images/'.$folder)) {
+		    	mkdir('./uploads/images/'.$folder, 0777, true);
+		    }
+	        $config['upload_path'] = './uploads/images/'.$folder; //path folder
+	        $config['allowed_types'] = 'jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
+	        $config['max_size'] = '2048'; //maksimum besar file 2M
+	        $config['max_width']  = '1288'; //lebar maksimum 1288 px
+	        $config['max_height']  = '1028'; //tinggi maksimu 768 px
+	        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+
+	        $this->upload->initialize($config);
+
+			$id_produk = $this->input->post('id_produk');
+			$kodeJasa = $this->input->post('kodeJasa');
+			$hargaJasa = $this->input->post('hargaJasa');
+			$jenis_produk = $this->input->post('jenis');
+			$panjang = $this->input->post('panjang');
+			$lebar = $this->input->post('lebar');
+			$id_bahan = $this->input->post('id_bahan');
+			$id_model = $this->input->post('id_model');
+			$jumlah = $this->input->post('jumlah');
+			$harga1 = $this->input->post('harga1');
+			$harga = $this->input->post('harga');
+			$cara_bayar = $this->input->post('cara_bayar');
+			if($kodeJasa=='Y') {
+				$gbr1 = $this->input->post('gbr1');
+				$gbr2 = $this->input->post('gbr2');
+				$gbr3 = $this->input->post('gbr3');
+
+				if($_FILES['gbr1']['name'])
+	        	{
+	        		if ($this->upload->do_upload('gbr1'))
+	            	{
+	            		$gbr = $this->upload->data();
+	            		$nmfile = '/uploads/images/'.$folder.'/'.$gbr['file_name'];
+	            	}
+	            }
+
+	            if($_FILES['gbr2']['name'])
+	        	{
+	        		if ($this->upload->do_upload('gbr2'))
+	            	{
+	            		$gbr = $this->upload->data();
+	            		$nmfile2 = '/uploads/images/'.$folder.'/'.$gbr['file_name'];
+	            	}
+	            }
+
+	            if($_FILES['gbr3']['name'])
+	        	{
+	        		if ($this->upload->do_upload('gbr3'))
+	            	{
+	            		$gbr = $this->upload->data();
+	            		$nmfile3 = '/uploads/images/'.$folder.'/'.$gbr['file_name'];
+	            	}
+	            }
+
+				$judul = $this->input->post('judul');
+				$isi = $this->input->post('isi');
+
+				$data = array(
+					'id_session'=>$uid,
+					'id_produk'=>$id_produk,
+					'id_bahan'=>$id_bahan,
+					'id_model'=>$id_model,
+					'panjang'=>$panjang,
+					'lebar'=>$lebar,
+					'jasa_desain'=>$kodeJasa,
+					'judul'=>$judul,
+					'isi'=>$isi,
+					'gambar1'=>$nmfile,
+					'gambar2'=>$nmfile2,
+					'gambar3'=>$nmfile3,
+					'jumlah'=>$jumlah,
+					'jumlah_bayar'=>$harga,
+					'tgl_pesan'=>date('Y-m-d'),
+					'jam_pesan'=>date('Y-m-d h:i:s'),
+					'metode_bayar'=>$cara_bayar,
+					'status_bayar'=>'unpaid',
+					'status_pengerjaan'=>'available',
+				);
+			} else {
+				//$file = $this->input->post('file');
+				if($_FILES['file']['name'])
+	        	{
+	        		if ($this->upload->do_upload('file'))
+	            	{
+	            		$gbr = $this->upload->data();
+	            		$nmfile = '/uploads/images/'.$folder.'/'.$gbr['file_name'];
+	            	}
+	            }
+				$keterangan = $this->input->post('keterangan');
+
+				$data = array(
+					'id_session'=>$uid,
+					'id_produk'=>$id_produk,
+					'id_bahan'=>$id_bahan,
+					'id_model'=>$id_model,
+					'panjang'=>$panjang,
+					'lebar'=>$lebar,
+					'jasa_desain'=>$kodeJasa,
+					'file'=>$nmfile,
+					'keterangan'=>$keterangan,
+					'jumlah'=>$jumlah,
+					'jumlah_bayar'=>$harga,
+					'tgl_pesan'=>date('Y-m-d'),
+					'jam_pesan'=>date('Y-m-d h:i:s'),
+					'metode_bayar'=>$cara_bayar,
+					'status_bayar'=>'unpaid',
+					'status_pengerjaan'=>'available',
+				);
+			}
+
+			if($this->pemesanan_model->save_data($data)) {
+				$hasil = array('status'=>'success','pesan'=>'Pesanan Anda disimpan. Terima kasih','jumlah'=>'ok');
+				echo json_encode($hasil);
+			} else {
+				$hasil = array('status'=>'denied','pesan'=>'Maaf. Pesanan Anda gagal disimpan.','jumlah'=>'ok');
+				echo json_encode($hasil);
+			}
+		} else {
+			redirect(base_url(), 'refresh');
 		}
 	}
 

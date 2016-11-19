@@ -56,25 +56,7 @@
     	<i class="fa fa-angle-double-up"></i>
     </a>
 
-  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.js"></script>
-	<!--<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/chat.js"></script>-->
-  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/bootstrap.js"></script>
-  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.bxslider.min.js"></script>
-  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.blImageCenter.js"></script>
-	<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/bootstrap.touchspin.js"></script>
-  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.zoom.min.js"></script>
-  <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/mimity.js"></script>
-	<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.validate.js"></script>
-  <!--<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/ajaxupload.3.5.js"></script>-->
-	<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/script.js"></script>
-	<script>
-		function get(content){
-			$('#confirmDelete').on('show.bs.modal', function(e) {
-				$(this).find('#rD').attr('value', $(e.relatedTarget).data('href'));
-				$('.debug-data').html('Hapus Produk: <strong>' + content + '</strong> ?');
-			});
-		}
-	</script>
+  
     <div class="modal fade" id="modalFormPesanan">
 	<form method="post" id="formUpdatePesanan" action="javascript:void(0)"  enctype="multipart/form-data">
 	<input type="hidden" name="hargaJasa" class="hargaJasa" id="hargaJasa" >

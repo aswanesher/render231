@@ -13,6 +13,7 @@ class Main extends CI_Controller {
 		$this->load->model('produk_model');
 		$this->load->model('halaman_model');
 		$this->load->model('users_model');
+		$this->load->model('pemesanan_model');
 		$this->load->model('testimonial_model');
 	}
 
