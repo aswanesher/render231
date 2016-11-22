@@ -1,6 +1,5 @@
 // JavaScript Document
 $(document).ready(function(e){
-	var url = 'http://localhost/render231/';
 	//----------------------------------------------Proses Form Pesanan-------------------------------------------//
 	$("#panjang").keyup(function(){ 
 		hitungPesanan();
@@ -360,6 +359,7 @@ $(document).ready(function(e){
 		},
 		submitHandler: function(form) {
 			var dataForm = new FormData(document.getElementById("formInsertPesanan"));
+			var urls = 'http://localhost/render231/';
 				$.ajax({
 					type		: "POST",
 					url			: "prosespesanan",
@@ -369,7 +369,7 @@ $(document).ready(function(e){
 					contentType : false,
 					processData : false, // Don't process the files
 					beforeSend	: function(){
-					  $("#preload").html('<img src="'+url+'assets/frontend/rendertech/lib/images/255.gif">');
+					  $("#preload").html('<img src="'+urls+'assets/frontend/rendertech/lib/images/255.gif">');
 					  $("#tblpesan").attr('disabled','disabled');
 					},
 					timeout:3000,
@@ -705,12 +705,6 @@ $(document).ready(function(e){
 			tgl:{
 				required: true,
 			},
-			bln:{
-				required: true,
-			},
-			thn:{
-				required: true,
-			},
         },
 		messages: {
 			no_pemesanan:{
@@ -735,12 +729,6 @@ $(document).ready(function(e){
 			tgl:{
 				required: "Mohon diisi.",
 			},
-			bln:{
-				required: "Mohon diisi.",
-			},
-			thn:{
-				required: "Mohon diisi.",
-			},
 		},
        errorPlacement: function(error, element) {
 			error.appendTo(element.parent("span"));
@@ -751,16 +739,17 @@ $(document).ready(function(e){
 		},
 		submitHandler: function(form) {
 			var dataForm = new FormData(document.getElementById("konfirmasiPembayaran"));
+			var urls = 'http://localhost/render231/';
 				$.ajax({
 					type		: "POST",
-					url			: "Proses-Konfirmasi-Bayar",
+					url			: "proses-konfirmasi-bayar",
 					data		: dataForm,
 					dataType	: "json",
 					cache		: false,
 					contentType : false,
 					processData : false, // Don't process the files
 					beforeSend	: function(){
-					  $("#preload").html('<img src="lib_/images/255.gif">');
+					  $("#preload").html('<img src="'+urls+'assets/frontend/rendertech/lib/images/255.gif">');
 					},
 					timeout:3000,
 					success: function(json){
@@ -777,6 +766,7 @@ $(document).ready(function(e){
 								});
 								$("#informasi").fadeIn(1000);
 								$("#informasi").html(pesan);
+								$("#informasi").addClass('alert alert-success alert-block');
 								setTimeout(function() {
 									$("#informasi").fadeOut(500);
 								}, 3000);
@@ -792,6 +782,7 @@ $(document).ready(function(e){
 									});
 									$("#informasi").fadeIn(1000);
 									$("#informasi").html(pesan);
+									$("#informasi").addClass('alert alert-danger alert-block');
 									setTimeout(function() {
 										$("#informasi").fadeOut(500);
 									}, 3000);
@@ -806,6 +797,7 @@ $(document).ready(function(e){
 									});
 									$("#informasi").fadeIn(1000);
 									$("#informasi").html(pesan);
+									$("#informasi").addClass('alert alert-success alert-block');
 									setTimeout(function() {
 										$("#informasi").fadeOut(500);
 									}, 10000);
@@ -818,6 +810,7 @@ $(document).ready(function(e){
 									$('body,html').animate({
 										scrollTop: 0
 									});
+									$("#informasi").addClass('alert alert-success alert-block');
 									$("#informasi").fadeIn(1000);
 									$("#informasi").html(pesan);
 									setTimeout(function() {
@@ -833,6 +826,7 @@ $(document).ready(function(e){
 									$('body,html').animate({
 										scrollTop: 0
 									});
+									$("#informasi").addClass('alert alert-success alert-block');
 									$("#informasi").fadeIn(1000);
 									$("#informasi").html(pesan);
 									setTimeout(function() {
@@ -1571,13 +1565,14 @@ $(document).ready(function(e){
 		},
 		submitHandler: function(form) {
 				var dataForm 	= $("#profil_pelanggan").serialize();
+				var urls = 'http://localhost/render231/';
 				$.ajax({
 					type		: "POST",
 					url			: "page/ubah_user",
 					data		: dataForm,
 					dataType	: "json",
 					beforeSend	: function(){
-					  	$("#preload").html('<img src="'+url+'assets/frontend/rendertech/lib/images/255.gif">');
+					  	$("#preload").html('<img src="'+urls+'assets/frontend/rendertech/lib/images/255.gif">');
 					},
 					timeout:3000,
 					success: function(json){
@@ -1693,17 +1688,18 @@ $(document).ready(function(e){
 	}
 	function loadTopCart(){
 		var show = "shop";
+		var urls = 'http://localhost/render231/';
 			$.ajax({
 				type		: "GET",
-				url	    	: "load-top-cart",
-				data    	: "shop="+shop,
+				url	    	: urls+"load-top-cart",
+				//data    	: "shop="+shop,
 				timeout 	: 3000,
 				beforeSend	:function(){
 					$("#shop").html('<li style="text-align:center; margin-bottom:10px; margin-top:10px;"> <img src="assets/frontend/rendertech/lib/images/camera-loader.gif"> <br>Loading..</li>')
 				},
 				success:function(data){
 					$("#shop").html('');
-					$("#shop").html(data)
+					$("#shop").html(data);
 				}
 			})
 	}

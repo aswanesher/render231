@@ -21,6 +21,7 @@
     <link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/jquery.bxslider.css" rel="stylesheet">
     <link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/style.css" rel="stylesheet">
 	<link href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/chat.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/frontend/rendertech/lib/css/bootstrap-datepicker3.min.css">
 	<!--<script type="text/javascript" src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/autoCekPesanan.js"></script>-->
     <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.js"></script>
     <!--<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/chat.js"></script>-->
@@ -33,6 +34,7 @@
     <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/jquery.validate.js"></script>
   <!--<script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/ajaxupload.3.5.js"></script>-->
     <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/script.js"></script>
+    <script src="<?php echo base_url();?>assets/frontend/rendertech/lib/js/bootstrap-datepicker.min.js"></script>
     <script>
         function get(content){
             $('#confirmDelete').on('show.bs.modal', function(e) {
@@ -40,6 +42,14 @@
                 $('.debug-data').html('Hapus Produk: <strong>' + content + '</strong> ?');
             });
         }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#tanggal').datepicker({
+                todayHighlight: true,
+                format: "yyyy-mm-dd"
+            });
+        });
     </script>
 
 </head>
@@ -126,6 +136,7 @@
                             </li>
                             <li class="divider"></li>
                                     <li><a href="<?php echo base_url();?>member-profile">Profil Pelanggan</a></li>
+                                    <li><a href="<?php echo base_url();?>order-list">Daftar Pesanan</a></li>
                                     <li><a href="<?php echo base_url();?>change-password">Ubah Password</a></li>
                                     <li><a href="<?php echo base_url();?>logout">Logout</a></li>
                             </ul>

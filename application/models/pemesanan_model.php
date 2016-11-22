@@ -31,6 +31,26 @@ class Pemesanan_model extends CI_Model
         return $query->result();
     }
 
+    function get_dataall_frontend($param,$sampai,$dari)
+    {
+        $this->db->select('*');
+
+        $query = $this->db->get('kb_pemesanan',$sampai,$dari);
+        return $query->result();
+    }
+
+    function get_data_pesanan($uid)
+    {
+        $this->db->select('a.*,b.thumb,b.seo_url,b.nama_produk as jenis,c.jenis_bahan');
+        $this->db->from('kb_pemesanan as a');
+        $this->db->join('kb_products as b', 'a.id_produk=b.id_produk', 'LEFT');
+        $this->db->join('kb_bahan as c', 'a.id_bahan=c.id_bahan', 'LEFT');
+        $this->db->where('a.id_session',$uid);
+        $this->db->order_by("a.id_produk", "desc");
+        $query = $this->db->get();
+        return $query->result();
+    }
+
     function jumlah(){
         return $this->db->get('kb_pemesanan')->num_rows();
     }
@@ -46,6 +66,20 @@ class Pemesanan_model extends CI_Model
         $this->db->from('kb_pemesanan');
         $this->db->where('id_tampung_pemesanan', $id);
 
+        $query = $this->db->get();
+        $result = $query->row();
+        return $result;
+    }
+
+    function get_data_detail($uid)
+    {
+        $this->db->select('a.*,b.thumb,b.seo_url,b.nama_produk as jenis,c.jenis_bahan,c.harga,d.name,d.address,d.phone,d.cellphone');
+        $this->db->from('kb_pemesanan as a');
+        $this->db->join('kb_products as b', 'a.id_produk=b.id_produk', 'LEFT');
+        $this->db->join('kb_bahan as c', 'a.id_bahan=c.id_bahan', 'LEFT');
+        $this->db->join('kb_user_detail as d', 'a.id_session=d.ID', 'LEFT');
+        $this->db->where('a.id_tampung_pemesanan',$uid);
+        $this->db->order_by("a.id_produk", "desc");
         $query = $this->db->get();
         $result = $query->row();
         return $result;

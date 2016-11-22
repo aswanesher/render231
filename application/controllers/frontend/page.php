@@ -18,6 +18,7 @@ class Page extends CI_Controller {
 		$this->load->model('bahan_model');
 		$this->load->model('template_cetak_model');
 		$this->load->model('pemesanan_model');
+		$this->load->model('konfirmasi_bayar_model');
 		$this->load->library(array('form_validation', 'pagination'));  
 		$this->load->helper('url'); 
 		$this->load->helper('url_helper');
@@ -941,7 +942,324 @@ class Page extends CI_Controller {
 
 	public function loadtopcart()
 	{
-		echo "a";
+		if($this->session->userdata('logged_in')) {
+			$dt=$this->session->userdata('logged_in');
+			$uid = $dt["id"];
+
+			$pes=$this->pemesanan_model->get_data_pesanan($uid);
+			foreach ($pes as $data) {
+				echo '<li>
+			            <a href="'.base_url().'products/'.$data->seo_url.'">
+			            	<p class="pull-right" style="padding-right:0px;">';
+			                if ($data->thumb <> ""){
+			                    echo '<img src="'.$data->thumb.'" alt="" width="70" height="70">';
+			                } else { 
+			                    echo '<img src="lib_/images/produk/no_image.jpg" alt="" width="47" height="47">';
+			                } 
+			                echo '</p>
+			                <b>'.$data->jenis.'</b>
+			                <p>Bahan : '.$data->jenis_bahan.'</p>
+			                <span>Jumlah : <strong>x '.$data ->jumlah.'</strong></span>
+			                <p>Total : Rp. '.number_format($data->jumlah_bayar,'0','.','.').'</p>
+
+			            </a>
+			            <hr>
+			        </li>';
+			}
+			echo '<center><a href="'.base_url().'order-list">Lihat Semua</a></center>';
+
+		} else {
+			echo "";
+		}
+	}
+
+	public function list_order()
+	{
+		if($this->session->userdata('logged_in')) {
+			$datas=$this->opsi_website->getdata();
+			$data['judul']=$datas->website_title;
+			$data['company']=$datas->company_name;
+			$data['website_desc']=$datas->website_desc;
+			$data['meta_desc']=$datas->meta_desc;
+			$data['meta_keywords']=$datas->meta_keywords;
+			$data['bbm']=$datas->bbm_pin;
+			$data['whatsapp']=$datas->whatsapp_no;
+			$data['telegram']=$datas->telegram_no;
+			$data['contact_email']=$datas->contact_email;
+			$data['address']=$datas->contact_address;
+			$data['phone']=$datas->contact_phone;
+			$data['cellphone']=$datas->contact_cellphone;
+			$data['fb']=$datas->sosmed_fb;
+			$data['twitter']=$datas->sosmed_twitter;
+			$data['ig']=$datas->sosmed_instagram;
+			$data['gplus']=$datas->sosmed_gplus;
+			$data['wlogo']=$datas->logo;
+			$data['theme_name']=$datas->template;
+			$data['wfavicon']=$datas->favicon;
+			$data['analytics']=$datas->google_analytics;
+			$data['pixel']=$datas->facebook_pixel;
+			$data['gmap']=$datas->gmap_iframe;
+			$data['judul_panel']="Dashboard";
+
+			$param = array(
+		            'query1' => '',
+		            'status' => '',
+		            'kategori' => ''
+		        );
+
+	        $datas=$this->opsi_website->getdata();
+
+	        // Config page
+	        $config['base_url'] = base_url().'order-list/hal/';
+	        $config['total_rows'] = $this->produk_model->jumlah_front();
+	        $config['per_page'] = 20;
+
+	        $dari = $this->uri->segment('3');
+	        $config['uri_segment'] = 3;
+
+	        $data['produk']=$this->pemesanan_model->get_dataall_frontend($param,$config['per_page'],$dari);
+
+	        $config['full_tag_open'] = '<ul class=pagination>';
+	        $config['full_tag_close'] = '</ul>';
+	        $config['first_link'] = false;
+	        $config['last_link'] = false;
+	        $config['first_tag_open'] = '<li>';
+	        $config['first_tag_close'] = '</li>';
+	        $config['prev_link'] = '&laquo';
+	        $config['prev_tag_open'] = '<li class=prev>';
+	        $config['prev_tag_close'] = '</li>';
+	        $config['next_link'] = '&raquo';
+	        $config['next_tag_open'] = '<li>';
+	        $config['next_tag_close'] = '</li>';
+	        $config['last_tag_open'] = '<li>';
+	        $config['last_tag_close'] = '</li>';
+	        $config['cur_tag_open'] = '<li class="active"><a href="#" style="background-color: #4CAF50;
+	        color: white;">';
+	        $config['cur_tag_close'] = '</a></li>';
+	        $config['num_tag_open'] = '<li>';
+	        $config['num_tag_close'] = '</li>';
+
+	        $this->pagination->initialize($config);
+
+			// Get Produk Widget
+			$produk=$this->widgets_model->get_data_filter('product_w');
+			$data['produk_widget']=$produk;
+			if(!empty($produk)) {
+				$data['prod_caption']=$produk->konten_text_widget;
+				$explode=explode('/', $produk->url);
+				$data['prod_url']='products';
+				$data['prod_list_url']='p/katalog-produk';
+			}
+			$dtproduk=$this->produk_model->get_data_widget();
+			$data['produk_widget_list']=$dtproduk;
+			$data['size'] = "12";
+			// End Produk Widget
+
+			// Get Bank Widget
+			$bank=$this->widgets_model->get_data_filter('bank_w');
+			if(!empty($bank)) {
+				$data['bank_widget']=$bank;
+				$data['bank']=$this->media_model->get_data_filter($bank->konten_text_id);
+				$data['bank_caption']=$bank->konten_text_widget;
+			}
+			// End Bank Widget
+
+			$menu=$this->menu_model->get_data_frontend();
+			$bahan=$this->bahan_model->get_data_frontend();
+			$model=$this->template_cetak_model->get_data_frontend();
+			$data['menu']=$menu;
+
+			$data['page_title']='Data Pemesanan';
+
+			$basetemp = "templates/frontend/".$datas->template."/";
+			$data['temp'] = $basetemp;
+			$view = "templates/frontend/".$datas->template."/";
+			$data['hal'] = "page/daftar_pesanan_page";
+			show_frontend($basetemp, $view, $data);
+		} else {
+			redirect('user-login', 'refresh');
+		}
+	}
+
+	public function detail_order($orderid)
+	{
+		if($this->session->userdata('logged_in')) {
+			$datas=$this->opsi_website->getdata();
+			$data['judul']=$datas->website_title;
+			$data['company']=$datas->company_name;
+			$data['website_desc']=$datas->website_desc;
+			$data['meta_desc']=$datas->meta_desc;
+			$data['meta_keywords']=$datas->meta_keywords;
+			$data['bbm']=$datas->bbm_pin;
+			$data['whatsapp']=$datas->whatsapp_no;
+			$data['telegram']=$datas->telegram_no;
+			$data['contact_email']=$datas->contact_email;
+			$data['address']=$datas->contact_address;
+			$data['phone']=$datas->contact_phone;
+			$data['cellphone']=$datas->contact_cellphone;
+			$data['fb']=$datas->sosmed_fb;
+			$data['twitter']=$datas->sosmed_twitter;
+			$data['ig']=$datas->sosmed_instagram;
+			$data['gplus']=$datas->sosmed_gplus;
+			$data['wlogo']=$datas->logo;
+			$data['theme_name']=$datas->template;
+			$data['wfavicon']=$datas->favicon;
+			$data['analytics']=$datas->google_analytics;
+			$data['pixel']=$datas->facebook_pixel;
+			$data['gmap']=$datas->gmap_iframe;
+			$data['judul_panel']="Dashboard";
+
+			$datapesanan = $this->pemesanan_model->get_data_detail($orderid);
+			$data['datapesanan']=$datapesanan;
+
+			$menu=$this->menu_model->get_data_frontend();
+			$bahan=$this->bahan_model->get_data_frontend();
+			$model=$this->template_cetak_model->get_data_frontend();
+			$data['menu']=$menu;
+
+			$data['page_title']='Data Pemesanan';
+
+			$basetemp = "templates/frontend/".$datas->template."/";
+			$data['temp'] = $basetemp;
+			$view = "templates/frontend/".$datas->template."/";
+			$data['hal'] = "page/detail_pesanan_page";
+			show_frontend($basetemp, $view, $data);
+		} else {
+			redirect('user-login', 'refresh');
+		}		
+	}
+
+	public function konfirmasi_pembayaran($idpesanan)
+	{
+		if($this->session->userdata('logged_in'))
+		{
+			$dt=$this->pemesanan_model->get_data_edit($idpesanan);
+			$datas=$this->opsi_website->getdata();
+			$data['judul']=$datas->website_title;
+			$data['company']=$datas->company_name;
+			$data['website_desc']=$datas->website_desc;
+			$data['meta_desc']=$datas->meta_desc;
+			$data['meta_keywords']=$datas->meta_keywords;
+			$data['bbm']=$datas->bbm_pin;
+			$data['whatsapp']=$datas->whatsapp_no;
+			$data['telegram']=$datas->telegram_no;
+			$data['contact_email']=$datas->contact_email;
+			$data['address']=$datas->contact_address;
+			$data['phone']=$datas->contact_phone;
+			$data['cellphone']=$datas->contact_cellphone;
+			$data['fb']=$datas->sosmed_fb;
+			$data['twitter']=$datas->sosmed_twitter;
+			$data['ig']=$datas->sosmed_instagram;
+			$data['gplus']=$datas->sosmed_gplus;
+			$data['wlogo']=$datas->logo;
+			$data['theme_name']=$datas->template;
+			$data['wfavicon']=$datas->favicon;
+			$data['analytics']=$datas->google_analytics;
+			$data['pixel']=$datas->facebook_pixel;
+			$data['gmap']=$datas->gmap_iframe;
+			$data['judul_panel']="Dashboard";
+
+			//$datapesanan = $this->pemesanan_model->get_data_detail($orderid);
+			//$data['datapesanan']=$datapesanan;
+
+			$data['id_pemesanan'] = $dt->id_tampung_pemesanan;
+			$data['kd_pemesanan'] = $dt->kd_pemesanan;
+
+			// Get Bank Widget
+			$bank=$this->widgets_model->get_data_filter('bank_w');
+			if(!empty($bank)) {
+				$data['bank_widget']=$bank;
+				$data['bank']=$this->media_model->get_data_filter($bank->konten_text_id);
+				$data['bank_caption']=$bank->konten_text_widget;
+			}
+			// End Bank Widget
+
+			$menu=$this->menu_model->get_data_frontend();
+			$bahan=$this->bahan_model->get_data_frontend();
+			$model=$this->template_cetak_model->get_data_frontend();
+			$data['menu']=$menu;
+
+			$data['page_title']='Data Pemesanan';
+
+			$basetemp = "templates/frontend/".$datas->template."/";
+			$data['temp'] = $basetemp;
+			$view = "templates/frontend/".$datas->template."/";
+			$data['hal'] = "page/konfirmasi_pembayaran";
+			show_frontend($basetemp, $view, $data);
+		} 
+		else
+		{
+			redirect('user-login', 'refresh');
+		}
+	}
+
+	public function proseskonfirmasibayar()
+	{
+		if($this->session->userdata('logged_in')) {
+			$this->load->library('upload');
+			$dt=$this->session->userdata('logged_in');
+			$uid = $dt["id"];
+
+			$acak = rand(00000,99999);
+			$nmfile = "file_".time()."_".$acak; //nama file saya beri nama langsung dan diikuti fungsi time dan acak
+			$folder = "konfirmasibayar_".date('d-m-y')."_".$uid;
+			if (!is_dir('uploads/images/'.$folder)) {
+		    	mkdir('./uploads/images/'.$folder, 0777, true);
+		    }
+	        $config['upload_path'] = './uploads/images/'.$folder; //path folder
+	        $config['allowed_types'] = 'jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
+	        $config['max_size'] = '1024'; //maksimum besar file 2M
+	        $config['max_width']  = '1288'; //lebar maksimum 1288 px
+	        $config['max_height']  = '1288'; //tinggi maksimu 768 px
+	        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+
+	        $this->upload->initialize($config);
+
+	        $id_pemesanan = $this->input->post('id_pemesanan');
+			$no_pemesanan = $this->input->post('no_pemesanan');
+			$nama_pemilik = $this->input->post('nama_pemilik');
+			$id_bank = strtolower($this->input->post('id_bank'));
+			$jumlah_dana = $this->input->post('jumlah_dana');
+			$tgl = $this->input->post('tgl');
+
+			if($_FILES['bukti']['name'])
+        	{
+        		if ($this->upload->do_upload('bukti'))
+            	{
+            		$gbr = $this->upload->data();
+            		$nmfile = '/uploads/images/'.$folder.'/'.$gbr['file_name'];
+            	}
+            }
+
+            $datas = array(
+            		'status_bayar'=>'verifypayment',
+            	);
+
+            $data = array(
+					'id_user'=>$uid,
+					'kd_pemesanan'=>$no_pemesanan,
+					'id_pemesanan'=>$id_pemesanan,
+					'bank'=>$id_bank,
+					'nama_pemilik_rekening'=>$nama_pemilik,
+					'jumlah_dana'=>$jumlah_dana,
+					'bukti_pembayaran'=>$nmfile,
+					'tgl_pembayaran'=>$tgl,
+					'status_approval'=>'pending'
+				);
+            
+            if($this->konfirmasi_bayar_model->save_data($data)) {
+            	$this->pemesanan_model->update_data($id_pemesanan,$datas);
+
+				$hasil = array('status'=>'success','pesan'=>'Konfirmasi Anda telah kami terima, akan kami proses segera. Terima kasih','jumlah'=>'ok');
+				echo json_encode($hasil);
+			} else {
+				$hasil = array('status'=>'denied','pesan'=>'Maaf. Konfirmasi Anda gagal disimpan.','jumlah'=>'ok');
+				echo json_encode($hasil);
+			}
+
+		} else {
+			redirect(base_url(), 'refresh');
+		}
 	}
 
 	public function proses_pesanan()
@@ -952,6 +1270,7 @@ class Page extends CI_Controller {
 			$uid = $dt["id"];
 
 			$acak = rand(00000,99999);
+			$kd_order = "#ORDER-".time()."-".$uid;
 			$nmfile = "file_".time()."_".$acak; //nama file saya beri nama langsung dan diikuti fungsi time dan acak
 			$folder = "order_".date('d-m-y')."_".$uid;
 			if (!is_dir('uploads/images/'.$folder)) {
@@ -1015,6 +1334,7 @@ class Page extends CI_Controller {
 
 				$data = array(
 					'id_session'=>$uid,
+					'kd_pemesanan'=>$kd_order,
 					'id_produk'=>$id_produk,
 					'id_bahan'=>$id_bahan,
 					'id_model'=>$id_model,
@@ -1049,6 +1369,7 @@ class Page extends CI_Controller {
 				$data = array(
 					'id_session'=>$uid,
 					'id_produk'=>$id_produk,
+					'kd_pemesanan'=>$kd_order,
 					'id_bahan'=>$id_bahan,
 					'id_model'=>$id_model,
 					'panjang'=>$panjang,

@@ -10,7 +10,7 @@
                 <?php } ?>
                 </a>
             </td>
-            <td width="25%" valign="middle"><?php echo $img->nama?><br><?php echo $img->keterangan;?></td>
+            <td width="25%" valign="middle"><strong><?php echo $img->nama?></strong><br><?php echo $img->keterangan;?></td>
         </tr>
     </tbody>
 </table>

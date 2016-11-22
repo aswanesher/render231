@@ -2,7 +2,7 @@
 		<h1>
 			<?php echo $judul_panel;?>
 			<?php if($tambah=='true') { ?>
-			<a href="<?php echo base_url();?>pemesanan/pemesanan_add" class="btn-sm btn-success pull-right"><i class="ace-icon fa fa-pencil-square-o bigger-230"></i> Tambah data</a>
+			<a href="<?php echo base_url();?>konfirmasi_bayar/konfirmasi_bayar_add" class="btn-sm btn-success pull-right"><i class="ace-icon fa fa-pencil-square-o bigger-230"></i> Tambah data</a>
 			<?php } ?>
 		</h1>
 	</div><!-- /.page-header -->
@@ -32,7 +32,7 @@
 				</div>
 				<div class="widget-body">
 					<div class="widget-main">
-						<form class="form-search" method="post" action="<?php echo base_url()?>pemesanan">
+						<form class="form-search" method="post" action="<?php echo base_url()?>konfirmasi_bayar">
 							<div class="row">
 								<div class="col-xs-12 col-sm-8">
 									<div class="input-group">
@@ -84,81 +84,46 @@
 					<table id="simple-table" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
-								<th class="center">
-									<label class="pos-rel">
-										<input type="checkbox" class="ace" />
-										<span class="lbl"></span>
-									</label>
-								</th>
-								<th>#</th><th>id_tampung_pemesanan</th>
-<th>id_session</th>
-<th>id_produk</th>
-<th>id_bahan</th>
-<th>id_model</th>
-<th>panjang</th>
-<th>lebar</th>
-<th>jasa_desain</th>
-<th>judul</th>
-<th>isi</th>
-<th>gambar1</th>
-<th>gambar2</th>
-<th>gambar3</th>
-<th>jumlah</th>
-<th>jumlah_bayar</th>
-<th>tgl_pesan</th>
-<th>jam_pesan</th>
-<th>file</th>
-<th>keterangan</th>
-<th>metode_bayar</th>
-<th>status_bayar</th>
-<th></th>
+								<th>#</th>
+								<th>Kode Pemesanan</th>
+								<th>Tujuan bank</th>
+								<th>Nama</th>
+								<th>Jumlah</th>
+								<th>Bukti</th>
+								<th>Tanggal</th>
+								<th>Status</th>
+								<th>Diverifikasi Oleh</th>
+								<th>Tanggal verifikasi</th>
+								<th></th>
 							</tr>
 						</thead>
 
 						<tbody>
 						<?php
 						$a=1;
-						foreach ($pemesanan as $row) {
+						foreach ($konfirmasi_bayar as $row) {
 						?>
 							<tr>
-								<td class="center">
-									<label class="pos-rel">
-										<input type="checkbox" class="ace" />
-										<span class="lbl"></span>
-									</label>
-								</td>
-
-								<td><?php echo $a;?></td><td><?php echo $row->id_tampung_pemesanan?></td>
-<td><?php echo $row->id_session?></td>
-<td><?php echo $row->id_produk?></td>
-<td><?php echo $row->id_bahan?></td>
-<td><?php echo $row->id_model?></td>
-<td><?php echo $row->panjang?></td>
-<td><?php echo $row->lebar?></td>
-<td><?php echo $row->jasa_desain?></td>
-<td><?php echo $row->judul?></td>
-<td><?php echo $row->isi?></td>
-<td><?php echo $row->gambar1?></td>
-<td><?php echo $row->gambar2?></td>
-<td><?php echo $row->gambar3?></td>
-<td><?php echo $row->jumlah?></td>
-<td><?php echo $row->jumlah_bayar?></td>
-<td><?php echo $row->tgl_pesan?></td>
-<td><?php echo $row->jam_pesan?></td>
-<td><?php echo $row->file?></td>
-<td><?php echo $row->keterangan?></td>
-<td><?php echo $row->metode_bayar?></td>
-<td><?php echo $row->status_bayar?></td>
-<td>
+								<td><?php echo $a;?></td>
+								<td><?php echo $row->kd_pemesanan?></td>
+								<td><?php echo $row->bank?></td>
+								<td><?php echo $row->nama_pemilik_rekening?></td>
+								<td><?php echo $row->jumlah_dana?></td>
+								<td><img src="<?php echo base_url().$row->bukti_pembayaran?>" width="128"></td>
+								<td><?php echo $row->tgl_pembayaran?></td>
+								<td><?php echo $row->status_approval?></td>
+								<td><?php echo $row->approve_by?></td>
+								<td><?php echo $row->approve_date?></td>
+								<td>
 									<div class="hidden-sm hidden-xs btn-group">
 										<?php if($edit=='true') { ?>
-										<a class="btn btn-xs btn-info" href="<?php echo base_url();?>pemesanan/pemesanan_edit/<?php echo $row->id_tampung_pemesanan?>">
+										<a class="btn btn-xs btn-info" href="<?php echo base_url();?>konfirmasi_bayar/konfirmasi_bayar_edit/<?php echo $row->id_pembayaran?>">
 											<i class="ace-icon fa fa-pencil bigger-120"></i>
 										</a>
 										<?php } ?>
 
 										<?php if($hapus=='true') { ?>
-										<a class="btn btn-xs btn-danger" href="<?php echo base_url();?>pemesanan/pemesanan_delete/<?php echo $row->id_tampung_pemesanan?>" onclick="return confirm('Anda yakin akan menghapus user ini?')">
+										<a class="btn btn-xs btn-danger" href="<?php echo base_url();?>konfirmasi_bayar/konfirmasi_bayar_delete/<?php echo $row->id_pembayaran?>" onclick="return confirm('Anda yakin akan menghapus user ini?')">
 											<i class="ace-icon fa fa-trash-o bigger-120"></i>
 										</a>
 										<?php } ?>

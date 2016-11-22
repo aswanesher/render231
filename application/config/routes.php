@@ -66,6 +66,10 @@ $route["orderproduct/prosespesanan"] = 'frontend/page/proses_pesanan';
 $route["member-profile/change-user-process"] = 'frontend/page/ubah_profil_user';
 $route["member-profile/upload-picture"] = 'frontend/page/ubah_foto_user';
 $route["load-top-cart"] = 'frontend/page/loadtopcart';
+$route["order-list"] = 'frontend/page/list_order';
+$route["order-list/invoice/(.*)"] = 'frontend/page/detail_order/$1';
+$route["confirm-payment/(.*)"] = 'frontend/page/konfirmasi_pembayaran/$1';
+$route["confirm-payment/proses-konfirmasi-bayar"] = 'frontend/page/proseskonfirmasibayar';
 $route["registerprocess/(.*)"] = 'frontend/page/reg_save/$1';
 $route["testimonialprocess/(.*)"] = 'frontend/page/testimonial_save/$1';
 
