@@ -51,7 +51,7 @@ class Pemesanan extends CI_Controller
                 $config['per_page'] = 20;
 
                 $dari = $this->uri->segment('3');
-                $data['pemesanan']=$this->pemesanan_model->get_dataall($param,$config['per_page'],$dari);
+                $data['pemesanan']=$this->pemesanan_model->get_dataalls($param,$config['per_page'],$dari);
 
                 $config['full_tag_open'] = '<ul class=pagination>';
                 $config['full_tag_close'] = '</ul>';
@@ -165,6 +165,78 @@ class Pemesanan extends CI_Controller
         }
     }
 
+    public function ambilpesanan($id)
+    {
+        if($this->session->userdata('logged_in'))
+        {
+            $ul=$this->session->userdata('logged_in');
+            $uid=$ul['id'];
+
+            $data = array(
+                    'id_operator' => $uid,
+                    'status_pengerjaan' => 'onprocess'
+                );
+            if($this->pemesanan_model->update_data($id,$data))
+            {
+                $this->session->set_flashdata('success', 'Terima kasih, selamat mengerjakan!');
+                redirect('pemesanan', 'refresh');
+            } 
+            else
+            {
+                $this->session->set_flashdata('error', 'Maaf, update gagal!');
+                redirect('pemesanan', 'refresh');
+            }
+        }
+    }
+
+    public function selesaipesanan($id)
+    {
+        if($this->session->userdata('logged_in'))
+        {
+            $ul=$this->session->userdata('logged_in');
+            $uid=$ul['id'];
+
+            $data = array(
+                    'id_operator' => $uid,
+                    'status_pengerjaan' => 'finished'
+                );
+            if($this->pemesanan_model->update_data($id,$data))
+            {
+                $this->session->set_flashdata('success', 'Terima kasih telah menyelesaikan pekerjaan!');
+                redirect('pemesanan', 'refresh');
+            } 
+            else
+            {
+                $this->session->set_flashdata('error', 'Maaf, update gagal!');
+                redirect('pemesanan', 'refresh');
+            }
+        }
+    }
+
+    public function batalkanpesanan($id)
+    {
+        if($this->session->userdata('logged_in'))
+        {
+            $ul=$this->session->userdata('logged_in');
+            $uid=$ul['id'];
+
+            $data = array(
+                    'id_operator' => '',
+                    'status_pengerjaan' => 'cancel'
+                );
+            if($this->pemesanan_model->update_data($id,$data))
+            {
+                $this->session->set_flashdata('success', 'Pesanan telah dibatalkan!');
+                redirect('pemesanan', 'refresh');
+            } 
+            else
+            {
+                $this->session->set_flashdata('error', 'Maaf, update gagal!');
+                redirect('pemesanan', 'refresh');
+            }
+        }
+    }
+
     public function detail($id)
     {
         $usr=$this->session->userdata('logged_in');
@@ -174,8 +246,10 @@ class Pemesanan extends CI_Controller
         if($this->session->userdata('logged_in')) {
             //if(!empty($per->is_edit)&&($per->is_edit=='true')) {
                 $datas=$this->opsi_website->getdata();
-
-                $dt=$this->pemesanan_model->get_data_edit($id);
+                $ul=$this->session->userdata('logged_in');
+                $data['grup_user'] = $ul['group'];
+                $data['uid'] = $ul['id'];
+                $dt=$this->pemesanan_model->get_data_edit2($id);
                 /* DEFINE YOUR OWN DATA HERE */
 
                 $data['judul']=$datas->website_title;

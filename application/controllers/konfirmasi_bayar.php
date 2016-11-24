@@ -8,6 +8,7 @@ class Konfirmasi_bayar extends CI_Controller
     {
         parent::__construct();
         $this->load->model('konfirmasi_bayar_model');
+        $this->load->model('pemesanan_model');
         $this->load->library('encrypt');
         $this->load->model('opsi_website');
         $this->load->model('permission_model');
@@ -23,12 +24,18 @@ class Konfirmasi_bayar extends CI_Controller
             if(!empty($per->is_view)&&($per->is_view=='true')) {
                 /* this is for searching */
                 $query1=$this->input->post('query1');
+                $status=$this->input->post('status');
+                $tgl=$this->input->post('tgl');
 
                 $param = array(
-                    'query1' => $query1
+                    'query1' => $query1,
+                    'status' => $status,
+                    'tgl' => $tgl,
                 );
 
                 $data['query1'] = $query1;
+                $data['status'] = $status;
+                $data['tgl'] = $tgl;
 
                 $datas=$this->opsi_website->getdata();
 
@@ -65,7 +72,7 @@ class Konfirmasi_bayar extends CI_Controller
 
                 $data['judul']=$datas->website_title;
                 $data['company']=$datas->company_name;
-                $data['judul_panel']='Pengaturan konfirmasi_bayar';
+                $data['judul_panel']='Konfirmasi Pembayaran';
                 $data['tambah']=$per->is_add;
                 $data['edit']=$per->is_edit;
                 $data['hapus']=$per->is_delete;
@@ -133,12 +140,12 @@ class Konfirmasi_bayar extends CI_Controller
                 $datas=$this->opsi_website->getdata();
 
                 $dt=$this->konfirmasi_bayar_model->get_data_edit($id);
-
+                $data['data']=$dt;
                 /* DEFINE YOUR OWN DATA HERE */
 
                 $data['judul']=$datas->website_title;
                 $data['company']=$datas->company_name;
-                $data['judul_panel']='Ubah konfirmasi_bayar';
+                $data['judul_panel']='Ubah Status Pembayaran';
 
                 $view = 'templates/backend/konfirmasi_bayar_modul/konfirmasi_bayar_edit';
                 show($view, $data);
@@ -158,6 +165,42 @@ class Konfirmasi_bayar extends CI_Controller
     {
         if($this->session->userdata('logged_in')) {
             /* PUT YOUR OWN PROCESS HERE */
+            $dt=$this->session->userdata('logged_in');
+
+            $uid=$dt['id'];
+            $tgl = date("y-m-d");
+            $id_pembayaran =  $this->input->post("id_pembayaran");
+            $id_pemesanan = $this->input->post("id_pemesanan");
+            $pemesan = $this->input->post("uid");
+            $status = $this->input->post("status");
+
+            $data=array(
+                    'status_approval'=>$status,
+                    'approve_by'=>$uid,
+                    'approve_date'=>$tgl
+                );
+            if($status=='pending') {
+                $datapemesanan=array(
+                    'status_bayar'=>'verifypayment'
+                );
+            } else {
+                $datapemesanan=array(
+                    'status_bayar'=>'paid'
+                );
+            }
+
+            if($this->konfirmasi_bayar_model->update_data($id_pembayaran,$data))
+            {
+                $this->pemesanan_model->update_data($id_pemesanan,$datapemesanan);
+                $this->session->set_flashdata('success', 'Data diubah!');
+                redirect('konfirmasi_bayar', 'refresh'); 
+            }
+            else
+            {
+                $this->session->set_flashdata('error', 'Data gagal diubah!');
+                redirect('konfirmasi_bayar', 'refresh');
+            }
+
         } else {
             redirect('backend_panel', 'refresh');
         }

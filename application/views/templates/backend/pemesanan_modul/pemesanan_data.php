@@ -93,6 +93,7 @@
 								<th>Tanggal order</th>
 								<th>Status bayar</th>
 								<th>Status pengerjaan</th>
+								<th>Operator</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -133,6 +134,7 @@
                                 <?php } else { ?>
                                     <span class="btn btn-danger btn-xs">Dibatalkan</span><?php } ?>
 								</td>
+								<td><?php echo $row->opp;?></td>
 								<td>
 									<div class="hidden-sm hidden-xs btn-group">
 										<?php if($edit=='true') { ?>

@@ -40,26 +40,21 @@
 									<span class="input-group-addon">
 									<i class="ace-icon fa fa-user"></i>
 									</span>
-									<input type="text" class="form-control search-query" placeholder="Cari nama.." value="<?php echo $query1;?>" name="query1">
+									<input type="text" class="form-control search-query" placeholder="Cari nama penyetor.." value="<?php echo $query1;?>" name="query1">
 
 									<span class="input-group-addon">
 									<i class="ace-icon fa fa-info-circle"></i>
 									</span>
 									<select class="form-control" id="form-field-select-1" name="status">
 										<option value="">-- Status --</option>
-										<option value="0" <?php if($status=='0') { echo "selected"; }?>>Aktif</option>
-										<option value="1" <?php if($status=='1') { echo "selected"; }?>>Non-Aktif</option>
+										<option value="pending" <?php echo $status=='pending'?'selected':''; ?>>Menunggu verifikasi</option>
+										<option value="approved" <?php echo $status=='approved'?'selected':''; ?>>Disetujui</option>
 									</select>
 
 									<span class="input-group-addon">
-									<i class="ace-icon fa fa-users"></i>
+									<i class="ace-icon fa fa-calendar"></i>
 									</span>
-									<select class="form-control" id="form-field-select-1" name="grup">
-										<option value="">-- Grup --</option>
-										<?php foreach ($user_type as $data) { ?>
-											<option value="<?php echo $data->id;?>" <?php if($grup==$data->id) { echo "selected"; }?>><?php echo $data->type; ?></option>
-										<?php }?>
-									</select>
+									<input type="text" name="tgl" placeholder="Tanggal Pemesanan" class="form-control" data-date-format="yyyy-mm-dd" value="<?php echo $tgl?>" data-provide="datepicker"/>
 
 									<span class="input-group-btn">
 									<button type="submit" class="btn btn-purple btn-sm">
@@ -86,8 +81,8 @@
 							<tr>
 								<th>#</th>
 								<th>Kode Pemesanan</th>
-								<th>Tujuan bank</th>
-								<th>Nama</th>
+								<th>Tujuan</th>
+								<th>Penyetor</th>
 								<th>Jumlah</th>
 								<th>Bukti</th>
 								<th>Tanggal</th>
@@ -105,13 +100,19 @@
 						?>
 							<tr>
 								<td><?php echo $a;?></td>
-								<td><?php echo $row->kd_pemesanan?></td>
-								<td><?php echo $row->bank?></td>
+								<td><a href="<?php echo base_url()?>pemesanan/detail/<?php echo $row->id_pemesanan;?>"><?php echo $row->kd_pemesanan?></a></td>
+								<td><?php echo strtoupper($row->bank)?></td>
 								<td><?php echo $row->nama_pemilik_rekening?></td>
-								<td><?php echo $row->jumlah_dana?></td>
-								<td><img src="<?php echo base_url().$row->bukti_pembayaran?>" width="128"></td>
+								<td>Rp. <?php echo number_format($row->jumlah_dana,'0','.','.')?></td>
+								<td align="center"><img src="<?php echo base_url().$row->bukti_pembayaran?>" width="128"><br><a href="<?php echo base_url().$row->bukti_pembayaran?>" target="_blank">Download Bukti</a></td>
 								<td><?php echo $row->tgl_pembayaran?></td>
-								<td><?php echo $row->status_approval?></td>
+								<td>
+									<?php if($row->status_approval == "pending"){;?>
+			                            <span class="btn btn-danger btn-xs">Menunggu Verifikasi</span>
+			                        <?php }elseif($row->status_approval == "approved"){ ?>
+			                            <span class="btn btn-success btn-xs">Disetujui</span>
+			                        <?php } ?>    
+								</td>
 								<td><?php echo $row->approve_by?></td>
 								<td><?php echo $row->approve_date?></td>
 								<td>
@@ -174,3 +175,4 @@
 					<center><?php echo $this->pagination->create_links(); ?></center>
 				</div><!-- /.span -->
 			</div><!-- /.row -->
+</div>

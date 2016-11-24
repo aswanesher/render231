@@ -1,9 +1,23 @@
 <div class="page-header">
 <h1>
 	<?php echo $judul_panel;?> <?php echo $datanya->kd_pemesanan;?> 
-	<a class="btn btn-xs btn-danger pull-right" href="<?php echo base_url();?>pemesanan">
+	<a class="btn btn-danger pull-right" href="<?php echo base_url();?>pemesanan">
 		<i class="ace-icon fa fa-angle-left"></i> Kembali
 	</a>
+	&nbsp;
+	<?php if(($datanya->id_operator==''||$datanya->id_operator=='0')&&($grup_user=='4')&&($datanya->status_bayar=='paid')) { ?>
+	<a class="btn btn-primary pull-right" href="<?php echo base_url();?>pemesanan/ambilpesanan/<?php echo $datanya->id_tampung_pemesanan;?>">
+		<i class="ace-icon fa fa-gear"></i> Ambil Pesanan
+	</a>
+	<?php } ?>
+	<?php if($datanya->id_operator==$uid&&$grup_user=='4'&&$datanya->status_pengerjaan=='onprocess') { ?>
+	<a class="btn btn-primary pull-right" href="<?php echo base_url();?>pemesanan/batalkanpesanan/<?php echo $datanya->id_tampung_pemesanan;?>">
+		<i class="ace-icon fa fa-close"></i> Batalkan pesanan
+	</a>
+	<a class="btn btn-success pull-right" href="<?php echo base_url();?>pemesanan/selesaipesanan/<?php echo $datanya->id_tampung_pemesanan;?>">
+		<i class="ace-icon fa fa-flag"></i> Pesanan selesai
+	</a>
+	<?php } ?>
 </h1>
 </div><!-- /.page-header -->
 
