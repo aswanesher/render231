@@ -58,8 +58,8 @@ if(isset($error)) {
 														</span>
 														<select class="form-control" id="form-field-select-1" name="status">
 															<option value="">-- Status --</option>
-															<option value="0" <?php if($status=='0') { echo "selected"; }?>>Aktif</option>
-															<option value="1" <?php if($status=='1') { echo "selected"; }?>>Non-Aktif</option>
+															<option value="0" <?php if($status=='0') { echo "selected"; }?>>Non-Aktif</option>
+															<option value="1" <?php if($status=='1') { echo "selected"; }?>>Aktif</option>
 														</select>
 
 														<span class="input-group-addon">
@@ -135,7 +135,7 @@ if(isset($error)) {
                                                                                                         <td><?php echo $row->grup;?></td>
 													<td>
 													<?php
-													if($row->user_status=='0') {
+													if($row->user_status=='1') {
 														echo '<span class="label label-sm label-success"> Aktif';
 													} else {
 														echo '<span class="label label-sm label-danger"> Non-aktif';

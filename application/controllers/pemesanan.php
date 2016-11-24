@@ -22,13 +22,24 @@ class Pemesanan extends CI_Controller
         if($this->session->userdata('logged_in')) {
             if(!empty($per->is_view)&&($per->is_view=='true')) {
                 /* this is for searching */
+                $ul=$this->session->userdata('logged_in');
+                $data['grup_user']=$ul['group'];
                 $query1=$this->input->post('query1');
+                $query2=$this->input->post('query2');
+                $tgl_pesan=$this->input->post('tgl_pesan');
+                $status=$this->input->post('status');
 
                 $param = array(
-                    'query1' => $query1
+                    'query1' => $query1,
+                    'query2' => $query2,
+                    'tgl_pesan' => $tgl_pesan,
+                    'status' => $status
                 );
 
                 $data['query1'] = $query1;
+                $data['query2'] = $query2;
+                $data['tgl_pesan'] = $tgl_pesan;
+                $data['status'] = $status;
 
                 $datas=$this->opsi_website->getdata();
 
@@ -149,6 +160,38 @@ class Pemesanan extends CI_Controller
                 $this->session->set_flashdata('error', 'Maaf, Anda tidak memiliki hak akses!');
                 redirect('pemesanan', 'refresh');
             }
+        } else {
+            redirect('backend_panel', 'refresh');
+        }
+    }
+
+    public function detail($id)
+    {
+        $usr=$this->session->userdata('logged_in');
+        $mod=$this->permission_model->get_data_module('pemesanan');
+        $per=$this->permission_model->get_data_akses($mod->module_id,$usr['group']);
+
+        if($this->session->userdata('logged_in')) {
+            //if(!empty($per->is_edit)&&($per->is_edit=='true')) {
+                $datas=$this->opsi_website->getdata();
+
+                $dt=$this->pemesanan_model->get_data_edit($id);
+                /* DEFINE YOUR OWN DATA HERE */
+
+                $data['judul']=$datas->website_title;
+                $data['company']=$datas->company_name;
+                $data['judul_panel']='Detail pemesanan';
+                $data['datanya'] = $dt;
+
+                $view = 'templates/backend/pemesanan_modul/pemesanan_detail';
+                show($view, $data);
+            /*} else if(empty($per->is_edit)) {
+                $this->session->set_flashdata('error', 'Maaf, Anda tidak memiliki hak akses!');
+                redirect('pemesanan', 'refresh');
+            } else {
+                $this->session->set_flashdata('error', 'Maaf, Anda tidak memiliki hak akses!');
+                redirect('pemesanan', 'refresh');
+            }*/
         } else {
             redirect('backend_panel', 'refresh');
         }

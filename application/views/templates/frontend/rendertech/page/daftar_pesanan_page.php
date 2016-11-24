@@ -45,7 +45,7 @@
                                 </td>
                                 <td style="text-align:center;">
                                 <?php if($data->status_pengerjaan == "available"){ ?>
-                                    <span class="btn btn-warning btn-xs">Belum Dikerjakan</span>
+                                    <span class="btn btn-danger btn-xs">Belum Dikerjakan</span>
                                 <?php }elseif($data->status_pengerjaan == "onprocess"){ ?>
                                     <span class="btn btn-primary btn-xs">Proses Pengerjaan</span>
                                 <?php }elseif($data->status_pengerjaan == "finished"){ ?>

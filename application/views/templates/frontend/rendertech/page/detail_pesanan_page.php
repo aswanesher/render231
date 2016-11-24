@@ -2,8 +2,10 @@
         <div class="col-xs-12">
     		<div class="invoice-title">
     			<h2>Invoice <?php echo $datapesanan->kd_pemesanan?>
-                <a href="javascript:void(0)" class="btn btn-danger pull-right"><i class="fa fa-print"></i> Cetak</a>  
+                <a href="javascript:void(0)" class="btn btn-danger pull-right"><i class="fa fa-print"></i> Cetak</a>
+                <?php if($datapesanan->status_bayar=='unpaid') {?> 
                 <a href="<?php echo base_url()?>confirm-payment/<?php echo $datapesanan->id_tampung_pemesanan;?>" class="btn btn-success pull-right"><i class="fa fa-money"></i> Konfirmasi Pembayaran</a>         
+                <?php } ?>
                 </h2>
     		</div>
     		<hr>

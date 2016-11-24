@@ -977,6 +977,8 @@ class Page extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in')) {
 			$datas=$this->opsi_website->getdata();
+			$dt=$this->session->userdata('logged_in');
+			$uid = $dt["id"];
 			$data['judul']=$datas->website_title;
 			$data['company']=$datas->company_name;
 			$data['website_desc']=$datas->website_desc;
@@ -1017,7 +1019,7 @@ class Page extends CI_Controller {
 	        $dari = $this->uri->segment('3');
 	        $config['uri_segment'] = 3;
 
-	        $data['produk']=$this->pemesanan_model->get_dataall_frontend($param,$config['per_page'],$dari);
+	        $data['produk']=$this->pemesanan_model->get_dataall_frontend($param,$config['per_page'],$dari,$uid);
 
 	        $config['full_tag_open'] = '<ul class=pagination>';
 	        $config['full_tag_close'] = '</ul>';
@@ -1085,6 +1087,8 @@ class Page extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in')) {
 			$datas=$this->opsi_website->getdata();
+			$dt=$this->session->userdata('logged_in');
+			$uid = $dt["id"];
 			$data['judul']=$datas->website_title;
 			$data['company']=$datas->company_name;
 			$data['website_desc']=$datas->website_desc;
@@ -1110,20 +1114,25 @@ class Page extends CI_Controller {
 			$data['judul_panel']="Dashboard";
 
 			$datapesanan = $this->pemesanan_model->get_data_detail($orderid);
-			$data['datapesanan']=$datapesanan;
+			$idsess=$datapesanan->id_session;
+			if($idsess==$uid) {
+				$data['datapesanan']=$datapesanan;
 
-			$menu=$this->menu_model->get_data_frontend();
-			$bahan=$this->bahan_model->get_data_frontend();
-			$model=$this->template_cetak_model->get_data_frontend();
-			$data['menu']=$menu;
+				$menu=$this->menu_model->get_data_frontend();
+				$bahan=$this->bahan_model->get_data_frontend();
+				$model=$this->template_cetak_model->get_data_frontend();
+				$data['menu']=$menu;
 
-			$data['page_title']='Data Pemesanan';
+				$data['page_title']='Data Pemesanan';
 
-			$basetemp = "templates/frontend/".$datas->template."/";
-			$data['temp'] = $basetemp;
-			$view = "templates/frontend/".$datas->template."/";
-			$data['hal'] = "page/detail_pesanan_page";
-			show_frontend($basetemp, $view, $data);
+				$basetemp = "templates/frontend/".$datas->template."/";
+				$data['temp'] = $basetemp;
+				$view = "templates/frontend/".$datas->template."/";
+				$data['hal'] = "page/detail_pesanan_page";
+				show_frontend($basetemp, $view, $data);
+			} else {
+				redirect(base_url(), 'refresh');	
+			}
 		} else {
 			redirect('user-login', 'refresh');
 		}		

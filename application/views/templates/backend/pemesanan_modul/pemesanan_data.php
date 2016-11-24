@@ -34,7 +34,7 @@
 					<div class="widget-main">
 						<form class="form-search" method="post" action="<?php echo base_url()?>pemesanan">
 							<div class="row">
-								<div class="col-xs-12 col-sm-8">
+								<div class="col-xs-12 col-sm-12">
 									<div class="input-group">
 
 									<span class="input-group-addon">
@@ -43,22 +43,24 @@
 									<input type="text" class="form-control search-query" placeholder="Cari nama.." value="<?php echo $query1;?>" name="query1">
 
 									<span class="input-group-addon">
+									<i class="ace-icon fa fa-reorder"></i>
+									</span>
+									<input type="text" class="form-control search-query" placeholder="Cari kode pemesanan.." value="<?php echo $query2;?>" name="query2">
+
+									<span class="input-group-addon">
+									<i class="ace-icon fa fa-calendar"></i>
+									</span>
+									<input type="text" name="tgl_pesan" placeholder="Tanggal Pemesanan" class="form-control" data-date-format="yyyy-mm-dd" value="<?php echo $tgl_pesan?>" data-provide="datepicker"/>
+
+									<span class="input-group-addon">
 									<i class="ace-icon fa fa-info-circle"></i>
 									</span>
 									<select class="form-control" id="form-field-select-1" name="status">
-										<option value="">-- Status --</option>
-										<option value="0" <?php if($status=='0') { echo "selected"; }?>>Aktif</option>
-										<option value="1" <?php if($status=='1') { echo "selected"; }?>>Non-Aktif</option>
-									</select>
-
-									<span class="input-group-addon">
-									<i class="ace-icon fa fa-users"></i>
-									</span>
-									<select class="form-control" id="form-field-select-1" name="grup">
-										<option value="">-- Grup --</option>
-										<?php foreach ($user_type as $data) { ?>
-											<option value="<?php echo $data->id;?>" <?php if($grup==$data->id) { echo "selected"; }?>><?php echo $data->type; ?></option>
-										<?php }?>
+										<option value="">-- Status Pengerjaan --</option>
+										<option value="available" <?php echo $status=='available'?'selected':''; ?>>Belum dikerjakan</option>
+										<option value="onprocess" <?php echo $status=='onprocess'?'selected':''; ?>>Sedang dikerjakan</option>
+										<option value="finished" <?php echo $status=='finished'?'selected':''; ?>>Selesai</option>
+										<option value="cancel" <?php echo $status=='cancel'?'selected':''; ?>>Dibatalkan</option>
 									</select>
 
 									<span class="input-group-btn">
@@ -84,34 +86,14 @@
 					<table id="simple-table" class="table table-striped table-bordered table-hover">
 						<thead>
 							<tr>
-								<th class="center">
-									<label class="pos-rel">
-										<input type="checkbox" class="ace" />
-										<span class="lbl"></span>
-									</label>
-								</th>
-								<th>#</th><th>id_tampung_pemesanan</th>
-<th>id_session</th>
-<th>id_produk</th>
-<th>id_bahan</th>
-<th>id_model</th>
-<th>panjang</th>
-<th>lebar</th>
-<th>jasa_desain</th>
-<th>judul</th>
-<th>isi</th>
-<th>gambar1</th>
-<th>gambar2</th>
-<th>gambar3</th>
-<th>jumlah</th>
-<th>jumlah_bayar</th>
-<th>tgl_pesan</th>
-<th>jam_pesan</th>
-<th>file</th>
-<th>keterangan</th>
-<th>metode_bayar</th>
-<th>status_bayar</th>
-<th></th>
+								<th>#</th>
+								<th>Kode order</th>
+								<th>Pemesan</th>
+								<th>Jasa Desain</th>
+								<th>Tanggal order</th>
+								<th>Status bayar</th>
+								<th>Status pengerjaan</th>
+								<th></th>
 							</tr>
 						</thead>
 
@@ -121,35 +103,37 @@
 						foreach ($pemesanan as $row) {
 						?>
 							<tr>
-								<td class="center">
-									<label class="pos-rel">
-										<input type="checkbox" class="ace" />
-										<span class="lbl"></span>
-									</label>
+								<td><?php echo $a;?></td>
+								<td><a href="pemesanan/detail/<?php echo $row->id_tampung_pemesanan?>"><?php echo $row->kd_pemesanan?></a></td>
+								<td><?php echo ucfirst($row->name)?></td>
+								<td>
+									<?php if($row->jasa_desain=='Y') {?>
+									<span class="btn btn-success btn-xs">Ya</span>
+									<?php } else { ?>
+									<span class="btn btn-danger btn-xs">Tidak</span>
+									<?php } ?>
 								</td>
-
-								<td><?php echo $a;?></td><td><?php echo $row->id_tampung_pemesanan?></td>
-<td><?php echo $row->id_session?></td>
-<td><?php echo $row->id_produk?></td>
-<td><?php echo $row->id_bahan?></td>
-<td><?php echo $row->id_model?></td>
-<td><?php echo $row->panjang?></td>
-<td><?php echo $row->lebar?></td>
-<td><?php echo $row->jasa_desain?></td>
-<td><?php echo $row->judul?></td>
-<td><?php echo $row->isi?></td>
-<td><?php echo $row->gambar1?></td>
-<td><?php echo $row->gambar2?></td>
-<td><?php echo $row->gambar3?></td>
-<td><?php echo $row->jumlah?></td>
-<td><?php echo $row->jumlah_bayar?></td>
-<td><?php echo $row->tgl_pesan?></td>
-<td><?php echo $row->jam_pesan?></td>
-<td><?php echo $row->file?></td>
-<td><?php echo $row->keterangan?></td>
-<td><?php echo $row->metode_bayar?></td>
-<td><?php echo $row->status_bayar?></td>
-<td>
+								<td><?php echo date("j F, Y",strtotime($row->tgl_pesan))?></td>
+								<td>
+								<?php if($row->status_bayar == "unpaid"){;?>
+		                            <span class="btn btn-danger btn-xs">Menunggu Pembayaran</span>
+		                        <?php }elseif($row->status_bayar == "verifypayment"){ ?>
+		                            <span class="btn btn-warning btn-xs">Menunggu verifikasi</span>    
+		                        <?php }elseif($row->status_bayar == "paid"){ ?>
+		                            <span class="btn btn-success btn-xs">Telah Bayar</span>
+		                        <?php } ?>
+								</td>
+								<td>
+								<?php if($row->status_pengerjaan == "available"){ ?>
+                                    <span class="btn btn-danger btn-xs">Belum Dikerjakan</span>
+                                <?php }elseif($row->status_pengerjaan == "onprocess"){ ?>
+                                    <span class="btn btn-primary btn-xs">Proses Pengerjaan</span>
+                                <?php }elseif($row->status_pengerjaan == "finished"){ ?>
+                                    <span class="btn btn-success btn-xs">Selesai</span>
+                                <?php } else { ?>
+                                    <span class="btn btn-danger btn-xs">Dibatalkan</span><?php } ?>
+								</td>
+								<td>
 									<div class="hidden-sm hidden-xs btn-group">
 										<?php if($edit=='true') { ?>
 										<a class="btn btn-xs btn-info" href="<?php echo base_url();?>pemesanan/pemesanan_edit/<?php echo $row->id_tampung_pemesanan?>">
@@ -209,3 +193,4 @@
 					<center><?php echo $this->pagination->create_links(); ?></center>
 				</div><!-- /.span -->
 			</div><!-- /.row -->
+			</div>
